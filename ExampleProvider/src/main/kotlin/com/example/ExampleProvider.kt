@@ -95,4 +95,60 @@ private fun Element.toSearchResult(): SearchResponse? {
             .flatten()
             .distinctBy { it.url }
     }
+
+
+ override suspend fun load(url: String): LoadResponse? {
+        val document = app.get(url).document
+        val article = document.selectFirst("#film-content-wrapper")?: return null
+
+        //trỏ vào đối tượng IMG
+        val imgThumb = article.select("img.thumb")
+        val hinh =fixUrlNull(imgThumb.attr("src"))
+        val ten_phim = imgThumb.attr("alt").trim()
+
+
+        val thong_tin = article.selectFirst("p")?.clone()//clone tạo bản sao mã HTML
+      //  val thong_tin = article.selectFirst("p")?.ownText()
+        thong_tin?.select("img")?.remove()
+        val tt = thong_tin?.text()
+
+        //lấy link video
+        val scriptTag = document.select("script").find{it.html().contains("jwplayer(\"javhd\").setup")}
+        val scriptConntent = scriptTag?.html()
+
+//        val regex = """window\.atob\("([^"]+)"\)""".toRegex()
+//        val matchResult = regex.find(response)
+
+        // 1. Tải mã nguồn HTML từ trang xem phim
+        val response = scriptConntent.toString()
+
+        // 2. Sử dụng Regex để tìm chuỗi Base64 nằm bên trong window.atob("...")
+        val regex = """window\.atob\("([^"]+)"\)""".toRegex()
+        val matchResult = regex.find(response)
+        val base64Encoded = matchResult?.groupValues[1].toString()
+        val decodedUrl = decodeBase64Custom(base64Encoded)
+
+
+
+// 4. Tạo tập phim mặc định để kích hoạt trình phát (Dành cho phim lẻ/nội dung đơn lẻ)
+        val episodes = listOf(
+            newEpisode(decodedUrl) {
+                this.name = "Phát Video"
+                this.episode = 1
+                this.season = 1
+            }
+        )
+
+
+        return newMovieLoadResponse(ten_phim, url, TvType.NSFW, decodedUrl) {
+            this.posterUrl = hinh
+            this.plot = thong_tin?.toString()
+
+        }
+    }
+
+
+
+
+    
 }
