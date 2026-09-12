@@ -30,7 +30,7 @@ class ExampleProvider : MainAPI() { // All providers must be an instance of Main
         "/trending/" to "trending",
         "/category/censored-2/" to "censored",
         "/category/uncensore-3/" to "uncensore",
-        "/beauty-4/" to "beauty"
+        "/category/beauty-4/" to "beauty"
     )
 
  override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
