@@ -23,7 +23,16 @@ class ExampleProvider : MainAPI() { // All providers must be an instance of Main
     override val vpnStatus            = VPNStatus.MightBeNeeded
     // Enable this when your provider has a main page
     override val hasMainPage = true
+ override var mainUrl = "https://javhdz.ac"
+    override val mainPage = mainPageOf(
+        "/video/" to "video",
+        "/trending/" to "trending",
+        "/category/censored-2/" to "censored",
+        "/category/uncensore-3/" to "uncensore",
+        "/beauty-4/" to "beauty"
+    )
 
+  
     // This function gets called when you search for something
     override suspend fun search(query: String): List<SearchResponse> {
         return listOf()
