@@ -197,17 +197,16 @@ private fun Element.toSearchResult(): SearchResponse? {
 
 
 
-            // 5. Trả link video về cho Cloudstream player
-//            callback.invoke(
-//                ExtractorLink(
-//                    source = this.name,
-//                    name = "Server VIP (JW)",
-//                    url = decodedUrl,
+             callback.invoke(
+                newExtractorLink(
+                    source = this.name,
+                    name = "Server VIP (JW)",
+                    url = decodedUrl,
 //                    referer = data, // Thêm referer để tránh lỗi 403 Forbidden nếu website chặn hotlink
 //                    quality = Qualities.Unknown.value, // Hệ thống m3u8 (Auto) sẽ tự nhận diện độ phân giải
 //                    isM3u8 = isM3
-//                )
-//            )
+                )
+            )
             return true
         }
 
