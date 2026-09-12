@@ -13,6 +13,7 @@ import kotlinx.coroutines.coroutineScope
 import org.jsoup.nodes.Element
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import com.lagradost.cloudstream3.utils.newExtractorLink
 
 class ExampleProvider : MainAPI() { // All providers must be an instance of MainAPI
   override var name = "Example provider"
