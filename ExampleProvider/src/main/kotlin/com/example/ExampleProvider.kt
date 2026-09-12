@@ -58,8 +58,41 @@ private fun Element.toSearchResult(): SearchResponse? {
     }
     
   
-    // This function gets called when you search for something
-    override suspend fun search(query: String): List<SearchResponse> {
-        return listOf()
+    override suspend fun search(query: String): List<SearchResponse> = coroutineScope {
+        // 1. Tách từ khóa theo dấu phẩy (,), dấu gạch đứng (|) hoặc dấu cộng (+)
+        val keywords = query.split(",", "|", "+", " ")
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
+
+        // 2. Chạy tìm kiếm song song cho từng từ khóa bằng async
+        val deferredResults = keywords.map { keyword ->
+            async {
+                val keywordResults = mutableListOf<SearchResponse>()
+                val maxPages = 3//chọc vào file HTML lấy trang cuốc cùng
+
+
+                for (page in 1..maxPages){
+                    val searchUrl = "$mainUrl/search/$keyword/page/$page"
+                    val document = try {
+                        app.get(searchUrl).document
+                    }catch (e: Exception){
+                        null
+                    } ?: break
+
+                    val items= document.select("a.movie-item").mapNotNull { it.toSearchResult() }
+                    if (items.isEmpty()) break
+
+                    keywordResults.addAll(items)
+
+                }
+                keywordResults
+
+            }
+        }
+
+        // 3. Chờ tất cả request hoàn thành -> gộp các danh sách -> loại bỏ phim bị trùng (theo URL)
+        deferredResults.awaitAll()
+            .flatten()
+            .distinctBy { it.url }
     }
 }
