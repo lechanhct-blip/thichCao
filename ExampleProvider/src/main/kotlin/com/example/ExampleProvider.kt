@@ -148,6 +148,114 @@ private fun Element.toSearchResult(): SearchResponse? {
     }
 
 
+ override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallback: (SubtitleFile) -> Unit, callback: (ExtractorLink) -> Unit): Boolean {
+        val doc = app.get(data).document
+
+
+        val scriptTag = doc.select("script").find{it.html().contains("jwplayer(\"javhd\").setup")}?: return false
+        val scriptConntent = scriptTag.html()
+
+//        val regex = """window\.atob\("([^"]+)"\)""".toRegex()
+//        val matchResult = regex.find(response)
+
+        // 1. Tải mã nguồn HTML từ trang xem phim
+        val response = app.get(data).text
+
+        // 2. Sử dụng Regex để tìm chuỗi Base64 nằm bên trong window.atob("...")
+        val regex = """window\.atob\("([^"]+)"\)""".toRegex()
+        val matchResult = regex.find(response)
+
+
+
+        if (matchResult != null) {
+            // Lấy ra chuỗi mã hóa (VD: aHR0cHM6Ly9wMTYtc2cu...)
+            val base64Encoded = matchResult.groupValues[1]
+
+            // 3. Giải mã Base64 sang chuỗi URL gốc công khai
+            //val decodedUrl = String(Base64.decode(base64Encoded, Base64.DEFAULT))
+//            val decodedBytes = android.util.Base64.decode(base64Encoded, android.util.Base64.DEFAULT)
+//            val decodedUrl = String(decodedBytes, Charsets.UTF_8)
+
+
+
+            val decodedUrl = decodeBase64Custom(base64Encoded)
+
+            // 4. Kiểm tra xem link giải mã được có phải là định dạng m3u8 không
+            val isM3u8 = decodedUrl.contains(".m3u8")
+
+
+//            runAllAsync(
+//                {
+//                    val episodeList = doc.select(".button_style .button_choice_server")
+//                    episodeList.amap { item ->
+//                        val link = item.attr("data-embed")
+//                        loadExtractor(base64Decode(link),subtitleCallback,callback)
+//                    }
+//                },
+//
+//            )
+
+
+
+            // 5. Trả link video về cho Cloudstream player
+//            callback.invoke(
+//                ExtractorLink(
+//                    source = this.name,
+//                    name = "Server VIP (JW)",
+//                    url = decodedUrl,
+//                    referer = data, // Thêm referer để tránh lỗi 403 Forbidden nếu website chặn hotlink
+//                    quality = Qualities.Unknown.value, // Hệ thống m3u8 (Auto) sẽ tự nhận diện độ phân giải
+//                    isM3u8 = isM3
+//                )
+//            )
+            return true
+        }
+
+
+
+
+        /*
+                runAllAsync(
+                    {
+                        val episodeList = doc.select(".button_style .button_choice_server")
+                        episodeList.amap { item ->
+                            val link = item.attr("data-embed")
+                            loadExtractor(base64Decode(link),subtitleCallback,callback)
+                        }
+                    },
+                    {
+                       // getExternalSubtitile(doc, subtitleCallback)
+                    }
+                )
+        */
+        return true
+    }
+
+
+    // Hàm bổ trợ giải mã Base64 thuần giúp tương thích hoàn toàn với Unit Test và mọi phiên bản Android
+    private fun decodeBase64Custom(input: String): String {
+        val base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+        val cleanedInput = input.replace("=", "")
+        val bytes = ArrayList<Byte>()
+        var buffer = 0
+        var bufferLength = 0
+
+        for (char in cleanedInput) {
+            val value = base64Chars.indexOf(char)
+            if (value < 0) continue // Bỏ qua ký tự không hợp lệ
+
+            buffer = (buffer shl 6) or value
+            bufferLength += 6
+
+            if (bufferLength >= 8) {
+                bufferLength -= 8
+                val byteValue = (buffer shr bufferLength) and 0xFF
+                bytes.add(byteValue.toByte())
+            }
+        }
+        return String(bytes.toByteArray(), Charsets.UTF_8)
+    }
+ 
 
 
     
