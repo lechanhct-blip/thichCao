@@ -32,6 +32,31 @@ class ExampleProvider : MainAPI() { // All providers must be an instance of Main
         "/beauty-4/" to "beauty"
     )
 
+ override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
+        val document = app.get("$mainUrl${request.data}page/$page").document
+//        val responseList  = document.select(".thumbnail").mapNotNull { it.toSearchResult() }
+        val responseList  = document.select("a.movie-item").mapNotNull { it.toSearchResult() }
+        return newHomePageResponse(HomePageList(request.name, responseList, isHorizontalImages = true),hasNext = true)
+    }
+private fun Element.toSearchResult(): SearchResponse? {
+        //tìm thẻ liên kết
+        val anchor = this.selectFirst("a.movie-item")?: return null
+
+        //lấy tên
+        var tenphim = anchor.attr("title").ifEmpty {
+            this.selectFirst(".movie-title-1")?.text()
+        } ?: return null
+        val duong_dan = mainUrl + anchor.attr(("href"))
+        val hinh = fixUrlNull(this.selectFirst("img.public-film-item-thumb")?.attr("src"))
+
+        val luot_xem = this.selectFirst(".meta-viewed")?.text()
+        tenphim = "$tenphim | $luot_xem lượt xem"
+        return newMovieSearchResponse(tenphim, duong_dan, TvType.NSFW) {
+            this.posterUrl = hinh
+            //this.po  = get(luot_xem)
+        }
+    }
+    
   
     // This function gets called when you search for something
     override suspend fun search(query: String): List<SearchResponse> {
