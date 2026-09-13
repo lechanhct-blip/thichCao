@@ -166,7 +166,7 @@ private fun Element.toSearchResult(): SearchResponse? {
     }
 
 override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallback: (SubtitleFile) -> Unit, callback: (ExtractorLink) -> Unit): Boolean {
-
+/*
 // 1. Thêm Header giả lập trình duyệt để tránh bị website chặn ngầm
     val responseText = app.get(
         data,
@@ -187,7 +187,13 @@ val scriptContent = scriptTag.html()
 
     val base64Encoded = matchResult.groupValues.getOrNull(1) ?: return false
     val decodedUrl = decodeBase64Custom(base64Encoded)
+*/
 
+  val responseText = app.get(data, headers = defaultHeaders).text
+
+        // 2. Gọi hàm bóc tách chuỗi URL trực tiếp từ HTML
+        val decodedUrl = extractMediaUrl(responseText)
+        
     // 4. Kiểm tra và trả về link cho trình phát
     if (decodedUrl.startsWith("http")) {
         val extractor = newExtractorLink(
@@ -346,7 +352,29 @@ private fun decodeBase64Custom(input: String): String {
     }
 }
 
- 
+
+// --- HÀM TRÍCH LỌC VÀ BÓC TÁCH RIÊNG KHỐI JWPLAYER ---
+    private fun extractMediaUrl(htmlContent: String): String {
+        if (htmlContent.isBlank()) return ""
+
+        // 1. Dùng Jsoup parse HTML và lọc CHÍNH XÁC thẻ script chứa jwplayer("javhd").setup
+        val document = org.jsoup.Jsoup.parse(htmlContent)
+        val scriptTag = document.select("script").find {
+            it.html().contains("""jwplayer("javhd").setup""") || it.html().contains("jwplayer(\"javhd\").setup")
+        } ?: return ""
+
+        val scriptContent = scriptTag.html()
+
+        // 2. Bắt chính xác hàm window.atob("...") nằm bên trong đoạn script jwplayer đó
+        val pattern = """window\.atob\s*\(\s*["']([^"']+)["']\s*\)""".toRegex(RegexOption.IGNORE_CASE)
+        val matchResult = pattern.find(scriptContent) ?: return ""
+
+        // 3. Trả về chuỗi URL m3u8 sau khi giải mã Base64
+        val base64Encoded = matchResult.groupValues.getOrNull(1) ?: return ""
+        return decodeBase64Custom(base64Encoded)
+    }
+
+
     // Hàm bổ trợ giải mã Base64 thuần giúp tương thích hoàn toàn với Unit Test và mọi phiên bản Android
     private fun decodeBase64Custom_(input: String): String {
         val base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
