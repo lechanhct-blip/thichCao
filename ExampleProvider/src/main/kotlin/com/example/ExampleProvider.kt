@@ -162,7 +162,20 @@ private fun Element.toSearchResult(): SearchResponse? {
         }
     }
 
+override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallback: (SubtitleFile) -> Unit, callback: (ExtractorLink) -> Unit): Boolean {
+        val doc = app.get(data).document
+        val scriptTag = doc.select("script").find{it.html().contains("jwplayer(\"javhd\").setup")}
+        val scriptConntent = scriptTag?.html()
+        val response = scriptConntent.toString()
+        val matchResult = regex.find(response)
+        val base64Encoded = matchResult?.groupValues[1].toString()
+                
+          loadExtractor(base64Decode(base64Encoded),subtitleCallback,callback)
+                
+        
 
+        return true
+    }
 
  /*
  override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallback: (SubtitleFile) -> Unit, callback: (ExtractorLink) -> Unit): Boolean {
