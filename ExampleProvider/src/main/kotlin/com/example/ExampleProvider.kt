@@ -158,16 +158,16 @@ private fun Element.toSearchResult(): SearchResponse? {
         val base64Encoded = matchResult?.groupValues[1].toString()
         val decodedUrl = decodeBase64Custom(base64Encoded)
 
-
+//val decodedUrl = extractMediaUrl(url)
 
 // 4. Tạo tập phim mặc định để kích hoạt trình phát (Dành cho phim lẻ/nội dung đơn lẻ)
-        val episodes = listOf(
-            newEpisode(decodedUrl) {
-                this.name = "Phát Video"
-                this.episode = 1
-                this.season = 1
-            }
-        )
+        // val episodes = listOf(
+        //     newEpisode(decodedUrl) {
+        //         this.name = "Phát Video"
+        //         this.episode = 1
+        //         this.season = 1
+        //     }
+        // )
 
 
         return newMovieLoadResponse(ten_phim, url, TvType.NSFW, decodedUrl) {
