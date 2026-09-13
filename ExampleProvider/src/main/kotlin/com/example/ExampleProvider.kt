@@ -16,7 +16,7 @@ import kotlinx.coroutines.awaitAll
 import com.lagradost.cloudstream3.utils.newExtractorLink
 
 class ExampleProvider : MainAPI() { // All providers must be an instance of MainAPI
-  override var name = "Example provider"
+  override var name = " Cao Cao"
     override val supportedTypes = setOf(TvType.NSFW)
     override val hasDownloadSupport   = true
     override val hasChromecastSupport = true
