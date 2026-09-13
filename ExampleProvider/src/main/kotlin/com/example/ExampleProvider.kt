@@ -165,7 +165,38 @@ private fun Element.toSearchResult(): SearchResponse? {
     }
 
 override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallback: (SubtitleFile) -> Unit, callback: (ExtractorLink) -> Unit): Boolean {
-        val doc = app.get(data).document
+
+// 1. Thêm Header giả lập trình duyệt để tránh bị website chặn ngầm
+    val response = app.get(
+        data,
+        headers = mapOf(
+            "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Referer" to mainUrl
+        )
+    ).text
+
+
+  // 2. Tìm chuỗi mã hóa trong window.atob("...")
+    val pattern = """window\.atob\("([^"]+)"\)""".toRegex()
+    val matchResult = pattern.find(response) ?: return false
+
+    val base64Encoded = matchResult.groupValues.getOrNull(1) ?: return false
+    val decodedUrl = decodeBase64Custom(base64Encoded)
+
+    // 3. Kiểm tra link sau giải mã xem có đúng định dạng URL không
+    if (decodedUrl.startsWith("http")) {
+        val extractor = newExtractorLink(
+            name = "Server VIP",
+            url = decodedUrl,
+            referer = mainUrl,
+            isM3u8 = decodedUrl.contains(".m3u8")
+        )
+        callback.invoke(extractor)
+        return true
+    }
+    
+  
+        // val doc = app.get(data).document
 
 
   
@@ -177,7 +208,7 @@ override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallbac
         // val base64Encoded = matchResult?.groupValues[1].toString()
                 
         //   loadExtractor(base64Decode(base64Encoded),subtitleCallback,callback)
-
+/*
 // 1. Lấy nội dung thẻ script chứa jwplayer
     val scriptTag = doc.select("script").find { it.html().contains("jwplayer(\"javhd\").setup") } ?: return false
     val scriptContent = scriptTag.html()
@@ -204,7 +235,7 @@ override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallbac
         }
 
 
-
+*/
 
 
                 
@@ -299,11 +330,21 @@ override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallbac
 
 
 
-
+// Thay thế hàm giải mã bằng thư viện java.util.Base64 chuẩn của Java để tránh lỗi tự tính toán bit
+private fun decodeBase64Custom(input: String): String {
+    return try {
+        if (input.isEmpty()) return ""
+        val cleanedInput = input.trim().replace("\n", "").replace("\r", "")
+        val decodedBytes = java.util.Base64.getDecoder().decode(cleanedInput)
+        String(decodedBytes, Charsets.UTF_8)
+    } catch (e: Exception) {
+        ""
+    }
+}
 
  
     // Hàm bổ trợ giải mã Base64 thuần giúp tương thích hoàn toàn với Unit Test và mọi phiên bản Android
-    private fun decodeBase64Custom(input: String): String {
+    private fun decodeBase64Custom_(input: String): String {
         val base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
         val cleanedInput = input.replace("=", "")
         val bytes = ArrayList<Byte>()
