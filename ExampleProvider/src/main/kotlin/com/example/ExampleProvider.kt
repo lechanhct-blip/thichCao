@@ -174,7 +174,7 @@ override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallbac
             "Referer" to mainUrl
         )
     ).text
-val document = org.jsoup.Jsoup.parse(responseText)
+val document = Jsoup.parse(responseText)
 
   // 2. Tìm đoạn script chứa jwplayer
     //val scriptTag = document.lines().find { it.contains("jwplayer(\"javhd\").setup") } ?: return false
@@ -184,7 +184,7 @@ val scriptContent = scriptTag.html()
     val pattern = """window\.atob\("([^"]+)"\)""".toRegex()
     val matchResult = pattern.find(scriptContent) ?: return false
 
-    val base64Encoded = matchResult?.groupValues?.getOrNull(1) ?: return false
+    val base64Encoded = matchResult.groupValues.getOrNull(1) ?: return false
     val decodedUrl = decodeBase64Custom(base64Encoded)
 
     // 4. Kiểm tra và trả về link cho trình phát
