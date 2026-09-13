@@ -186,10 +186,9 @@ override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallbac
     // 3. Kiểm tra link sau giải mã xem có đúng định dạng URL không
     if (decodedUrl.startsWith("http")) {
         val extractor = newExtractorLink(
-            name = "Server VIP",
-            url = decodedUrl,
-            referer = mainUrl,
-            isM3u8 = decodedUrl.contains(".m3u8")
+             source = this.name,
+                name = "Server VIP",
+                url = decodedUrl
         )
         callback.invoke(extractor)
         return true
