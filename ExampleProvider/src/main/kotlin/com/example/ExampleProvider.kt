@@ -155,7 +155,7 @@ private fun Element.toSearchResult(): SearchResponse? {
         )
 
 
-        return newMovieLoadResponse(ten_phim, url, TvType.NSFW, decodedUrl) {
+        return newMovieLoadResponse(ten_phim, url, TvType.NSFW, url) {
             this.posterUrl = hinh
             this.plot = thong_tin?.toString()
 
@@ -163,6 +163,8 @@ private fun Element.toSearchResult(): SearchResponse? {
     }
 
 
+
+ /*
  override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallback: (SubtitleFile) -> Unit, callback: (ExtractorLink) -> Unit): Boolean {
         val doc = app.get(data).document
 
@@ -244,8 +246,13 @@ private fun Element.toSearchResult(): SearchResponse? {
         */
         return true
     }
+*/
 
 
+
+
+
+ 
     // Hàm bổ trợ giải mã Base64 thuần giúp tương thích hoàn toàn với Unit Test và mọi phiên bản Android
     private fun decodeBase64Custom(input: String): String {
         val base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
