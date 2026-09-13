@@ -57,8 +57,22 @@ private fun Element.toSearchResult(): SearchResponse? {
             //this.po  = get(luot_xem)
         }
     }
+
+
+
+ override suspend fun search(query: String, page: Int): SearchResponseList {
+        val doc = app.get("`$mainUrl/search/$query/page/$page`").document
+//        val json = app.get("$mainUrl/search/$query/page/$page").text
+//        val html = JSONObject(json).getString("html")
+//        val document = Jsoup.parse(html)1
+
+        val results = doc.select("a.movie-item").mapNotNull { it.toSearchResult() }
+        val hasNext = if (results.isEmpty()) false else true
+        return newSearchResponseList(results, hasNext)
+    }
+
     
-  
+  /*
     override suspend fun search(query: String): List<SearchResponse> = coroutineScope {
         // 1. Tách từ khóa theo dấu phẩy (,), dấu gạch đứng (|) hoặc dấu cộng (+)
         val keywords = query.split(",", "|", "+", " ")
@@ -96,7 +110,7 @@ private fun Element.toSearchResult(): SearchResponse? {
             .flatten()
             .distinctBy { it.url }
     }
-
+*/
 
  override suspend fun load(url: String): LoadResponse? {
         val document = app.get(url).document
