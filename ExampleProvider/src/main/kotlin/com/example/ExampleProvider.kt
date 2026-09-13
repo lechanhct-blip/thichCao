@@ -166,14 +166,49 @@ private fun Element.toSearchResult(): SearchResponse? {
 
 override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallback: (SubtitleFile) -> Unit, callback: (ExtractorLink) -> Unit): Boolean {
         val doc = app.get(data).document
-        val scriptTag = doc.select("script").find{it.html().contains("jwplayer(\"javhd\").setup")}
-        val scriptConntent = scriptTag?.html()
-        val response = scriptConntent.toString()
-        val regex = """window\.atob\("([^"]+)"\)""".toRegex()
-        val matchResult = regex.find(response)
-        val base64Encoded = matchResult?.groupValues[1].toString()
+
+
+  
+        // val scriptTag = doc.select("script").find{it.html().contains("jwplayer(\"javhd\").setup")}
+        // val scriptConntent = scriptTag?.html()
+        // val response = scriptConntent.toString()
+        // val regex = """window\.atob\("([^"]+)"\)""".toRegex()
+        // val matchResult = regex.find(response)
+        // val base64Encoded = matchResult?.groupValues[1].toString()
                 
-          loadExtractor(base64Decode(base64Encoded),subtitleCallback,callback)
+        //   loadExtractor(base64Decode(base64Encoded),subtitleCallback,callback)
+
+// 1. Lấy nội dung thẻ script chứa jwplayer
+    val scriptTag = doc.select("script").find { it.html().contains("jwplayer(\"javhd\").setup") } ?: return false
+    val scriptContent = scriptTag.html()
+
+    // 2. Tìm chuỗi Base64 bằng Regex
+    val pattern = """window\.atob\("([^"]+)"\)""".toRegex()
+    val matchResult = pattern.find(scriptContent) ?: return false
+
+    // 3. Lấy chuỗi base64 và giải mã
+    val base64Encoded = matchResult.groupValues.getOrNull(1) ?: return false
+    val decodedUrl = decodeBase64Custom(base64Encoded)
+
+    // 4. Nếu giải mã ra link video hợp lệ, đẩy thẳng link về cho CloudStream
+    if (decodedUrl.startsWith("http")) {
+        callback.invoke(
+            ExtractorLink(
+                source = this.name,
+                name = "Server VIP",
+                url = decodedUrl,
+                referer = mainUrl,
+                quality = Qualities.Unknown.value,
+                isM3u8 = decodedUrl.contains(".m3u8")
+            )
+        )
+        return true
+    }
+
+
+
+
+
                 
         
 
