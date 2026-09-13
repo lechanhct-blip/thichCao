@@ -27,18 +27,106 @@ class NangCuc : MainAPI() {
     override val vpnStatus            = VPNStatus.MightBeNeeded
     // Enable this when your provider has a main page
     override val hasMainPage = true
-  override var mainUrl = "https://nangcuc.ws"
+    override var mainUrl = "https://nangcuc.ws"
     override val mainPage = mainPageOf(
-    "/" to "Trang chủ",
-    "/regions/nhat-ban/" to "Nhật Bản",
-    "/regions/trung-quoc/" to "Trung Quốc",
-    "/genres/au-my/" to "Âu - Mỹ",
-    "/genres/trung-quoc/" to "Gái Trung Quốc",
-    "/genres/khong-che/" to "Không Che",
+     "/" to "Trang chủ",
+     "/regions/nhat-ban/" to "Nhật Bản",
+     "/regions/trung-quoc/" to "Trung Quốc",
+     "/genres/au-my/" to "Âu - Mỹ",
+     "/genres/trung-quoc/" to "Gái Trung Quốc",
+     "/genres/khong-che/" to "Không Che",
+     "/genres/viet-sub/" to "Sub Việt",
+     "/dien-vien/" to "Diễn Viên"
 
-    "/genres/viet-sub/" to "Sub Việt",
-    "/dien-vien/" to "Diễn Viên"
+     )
 
-)
+
+
+    override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
+        val document = app.get("$mainUrl${request.data}page/$page").document
+//        val responseList  = document.select(".thumbnail").mapNotNull { it.toSearchResult() }
+        val responseList  = document.select("div.flw-item").mapNotNull { it.toSearchResult() }
+        return newHomePageResponse(HomePageList(request.name, responseList, isHorizontalImages = true),hasNext = true)
+    }
+
+
+
+
+    private fun Element.toSearchResult(): SearchResponse? {
+//        val title = this.select(".video-title").text()
+        //val title = this.selectFirst(".movie-item m-block")?.attr("title").toString()
+
+        //tìm thẻ liên kết
+        val anchor = this.selectFirst("div.flw-item")?: return null
+
+
+        val hinh = fixUrlNull(anchor.selectFirst("img.film-poster-img")?.attr("data-src"))
+
+        //lấy tên
+        var tenphim = anchor.selectFirst("img.film-poster-img")?.attr("title").toString()
+
+        val duong_dan = anchor.selectFirst("a.film-poster-ahref")?.attr("href").toString()
+
+        return newMovieSearchResponse(tenphim, duong_dan, TvType.NSFW) {
+            this.posterUrl = hinh
+            //this.po  = get(luot_xem)
+        }
+    }
+
+
+
+
+    override suspend fun search(query: String, page: Int): SearchResponseList {
+        val doc = app.get("$mainUrl/page/$page/?s=$query").document
+        val results = doc.select("div.flw-item").mapNotNull { it.toSearchResult() }
+        val hasNext = if (results.isEmpty()) false else true
+        return newSearchResponseList(results, hasNext)
+    }
+
+
+override suspend fun load(url: String): LoadResponse? {
+        val document = app.get(url).document
+        val article = document.selectFirst(".watch-block-area")?: return null
+
+        //trỏ vào đối tượng IMG
+       // val imgThumb = article.selectFirst("button.film-preview-thumb img")
+        val hinh =fixUrlNull(article.selectFirst("button.film-preview-thumb img")?.attr("src"))
+        val ten_phim = article.selectFirst("h1.video-title")?.text()?: return null
+
+
+        val thong_tin = article.selectFirst(".fancybox p")?.text()
+        //thong_tin?.select("img")?.remove()
+val aa = thong_tin?.length
+val embedUrl = article.selectFirst(".list_link li")?.attr("data-link")
+
+
+val luot_xem =article.selectFirst(".block-view span")?.text()
+
+    return newMovieLoadResponse(ten_phim+" | "+luot_xem, url, TvType.NSFW, embedUrl) {
+        this.posterUrl = hinh
+        this.plot = thong_tin
+    }
+
+// 4. Tạo tập phim mặc định để kích hoạt trình phát (Dành cho phim lẻ/nội dung đơn lẻ)
+//        val episodes = listOf(
+//            newEpisode(url) {
+//                this.name = "Phát Video"
+//                this.episode = 1
+//                this.season = 1
+//            }
+//        )
+
+    }
+
+
+
+
+
+
+
+
+
+
+    
   
 }
