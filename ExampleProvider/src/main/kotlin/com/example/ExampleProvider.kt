@@ -70,7 +70,7 @@ private fun Element.toSearchResult(): SearchResponse? {
 
 
  override suspend fun search(query: String, page: Int): SearchResponseList {
-        val doc = app.get("`$mainUrl/search/$query/page/$page`").document
+        val doc = app.get("$mainUrl/search/$query/page/$page").document
 //        val json = app.get("$mainUrl/search/$query/page/$page").text
 //        val html = JSONObject(json).getString("html")
 //        val document = Jsoup.parse(html)1
