@@ -176,19 +176,22 @@ override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallbac
     ).text
 
 
-  // 2. Tìm chuỗi mã hóa trong window.atob("...")
-    val pattern = """window\.atob\("([^"]+)"\)""".toRegex()
-    val matchResult = pattern.find(response) ?: return false
+  // 2. Tìm đoạn script chứa jwplayer
+    val scriptTag = response.lines().find { it.contains("jwplayer(\"javhd\").setup") } ?: response
 
-    val base64Encoded = matchResult.groupValues.getOrNull(1) ?: return false
+    // 3. Sử dụng Regex tìm chuỗi Base64
+    val pattern = """window\.atob\("([^"]+)"\)""".toRegex()
+    val matchResult = pattern.find(scriptTag) ?: pattern.find(response)
+
+    val base64Encoded = matchResult?.groupValues?.getOrNull(1) ?: ""
     val decodedUrl = decodeBase64Custom(base64Encoded)
 
-    // 3. Kiểm tra link sau giải mã xem có đúng định dạng URL không
+    // 4. Kiểm tra và trả về link cho trình phát
     if (decodedUrl.startsWith("http")) {
         val extractor = newExtractorLink(
-             source = this.name,
-                name = "Server VIP",
-                url = decodedUrl
+            source = this.name,
+            name = "Server VIP",
+            url = decodedUrl
         )
         callback.invoke(extractor)
         return true
