@@ -40,7 +40,15 @@ class NangCuc : MainAPI() {
 
      )
 
-
+ override fun getVideoInterceptor(extractorLink: ExtractorLink): okhttp3.Interceptor {
+        return okhttp3.Interceptor { chain ->
+            val request = chain.request().newBuilder()
+                .header("User-Agent", "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36")
+                .header("Referer", mainUrl)
+                .build()
+            chain.proceed(request)
+        }
+    }
 
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
         val document = app.get("$mainUrl${request.data}page/$page").document
