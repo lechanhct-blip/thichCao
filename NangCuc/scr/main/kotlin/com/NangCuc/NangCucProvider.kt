@@ -118,7 +118,19 @@ val luot_xem =article.selectFirst(".block-view span")?.text()
 
     }
 
-
+override suspend fun loadLinks(decodedUrl: String, isCasting: Boolean, subtitleCallback: (SubtitleFile) -> Unit, callback: (ExtractorLink) -> Unit): Boolean {        
+    // 4. Kiểm tra và trả về link cho trình phát
+    if (decodedUrl.startsWith("http")) {
+        val extractor = newExtractorLink(
+            source = this.name,
+            name = "Server VIP",
+            url = decodedUrl
+        )
+        callback.invoke(extractor)
+        return true
+    }
+    return false
+  }
 
 
 
