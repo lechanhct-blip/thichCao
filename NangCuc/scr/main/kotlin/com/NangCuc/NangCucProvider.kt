@@ -19,5 +19,19 @@ import com.lagradost.cloudstream3.utils.newExtractorLink
 import com.lagradost.cloudstream3.utils.loadExtractor
 
 class NangCuc : MainAPI() {
+
+  override var mainUrl = "https://nangcuc.ws"
+    override val mainPage = mainPageOf(
+    "/" to "Trang chủ",
+    "/regions/nhat-ban/" to "Nhật Bản",
+    "/regions/trung-quoc/" to "Trung Quốc",
+    "/genres/au-my/" to "Âu - Mỹ",
+    "/genres/trung-quoc/" to "Gái Trung Quốc",
+    "/genres/khong-che/" to "Không Che",
+
+    "/genres/viet-sub/" to "Sub Việt",
+    "/dien-vien/" to "Diễn Viên"
+
+)
   
 }
