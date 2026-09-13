@@ -12,6 +12,7 @@ import com.lagradost.cloudstream3.utils.ExtractorLink
 import kotlinx.coroutines.coroutineScope
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.Document
+import org.jsoup.Jsoup
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import com.lagradost.cloudstream3.utils.newExtractorLink
