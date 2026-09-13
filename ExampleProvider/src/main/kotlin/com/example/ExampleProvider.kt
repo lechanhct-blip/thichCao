@@ -11,9 +11,11 @@ import com.lagradost.cloudstream3.*
 import com.lagradost.cloudstream3.utils.ExtractorLink
 import kotlinx.coroutines.coroutineScope
 import org.jsoup.nodes.Element
+import org.jsoup.nodes.Document
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import com.lagradost.cloudstream3.utils.newExtractorLink
+import com.lagradost.cloudstream3.utils.loadExtractor
 
 class ExampleProvider : MainAPI() { // All providers must be an instance of MainAPI
   override var name = " Cao Cazo"
@@ -75,7 +77,7 @@ private fun Element.toSearchResult(): SearchResponse? {
   /*
     override suspend fun search(query: String): List<SearchResponse> = coroutineScope {
         // 1. Tách từ khóa theo dấu phẩy (,), dấu gạch đứng (|) hoặc dấu cộng (+)
-        val keywords = query.split(",", "|", "+", " ")
+        val keywords = query.split(",", "|", "+")
             .map { it.trim() }
             .filter { it.isNotEmpty() }
 
