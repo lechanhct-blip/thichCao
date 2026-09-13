@@ -192,18 +192,16 @@ override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallbac
 
     // 4. Nếu giải mã ra link video hợp lệ, đẩy thẳng link về cho CloudStream
     if (decodedUrl.startsWith("http")) {
-        callback.invoke(
-            ExtractorLink(
+            // Dùng newExtractorLink theo đúng chuẩn SDK mới
+            val extractor = newExtractorLink(
                 source = this.name,
                 name = "Server VIP",
-                url = decodedUrl,
-                referer = mainUrl,
-                quality = Qualities.Unknown.value,
-                isM3u8 = decodedUrl.contains(".m3u8")
+                url = decodedUrl
+                
             )
-        )
-        return true
-    }
+            callback.invoke(extractor)
+            return true
+        }
 
 
 
