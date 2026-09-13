@@ -19,7 +19,7 @@ import com.lagradost.cloudstream3.utils.newExtractorLink
 import com.lagradost.cloudstream3.utils.loadExtractor
 
 class ExampleProvider : MainAPI() { // All providers must be an instance of MainAPI
-  override var name = " Cao CaP"
+  override var name = "JAVHDZ_nt"
     override val supportedTypes = setOf(TvType.NSFW)
     override val hasDownloadSupport   = true
     override val hasChromecastSupport = true
