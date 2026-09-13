@@ -28,6 +28,12 @@ class ExampleProvider : MainAPI() { // All providers must be an instance of Main
     // Enable this when your provider has a main page
     override val hasMainPage = true
  override var mainUrl = "https://javhdz.ac"
+   private val defaultHeaders = mapOf(
+        "User-Agent" to "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36",
+        "Accept" to "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language" to "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7",
+        "Referer" to mainUrl
+    )
     override val mainPage = mainPageOf(
         "/video/" to "video",
         "/trending/" to "trending",
