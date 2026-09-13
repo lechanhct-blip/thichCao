@@ -19,7 +19,14 @@ import com.lagradost.cloudstream3.utils.newExtractorLink
 import com.lagradost.cloudstream3.utils.loadExtractor
 
 class NangCuc : MainAPI() {
-
+ override var name = "Nang Cuc"
+    override val supportedTypes = setOf(TvType.NSFW)
+    override val hasDownloadSupport   = true
+    override val hasChromecastSupport = true
+    override var lang = "vi"
+    override val vpnStatus            = VPNStatus.MightBeNeeded
+    // Enable this when your provider has a main page
+    override val hasMainPage = true
   override var mainUrl = "https://nangcuc.ws"
     override val mainPage = mainPageOf(
     "/" to "Trang chủ",
