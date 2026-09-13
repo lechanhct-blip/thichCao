@@ -257,7 +257,7 @@ val scriptContent = scriptTag.html()
                 
         
 
-        return true
+        return false
     }
 
  /*
