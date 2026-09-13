@@ -177,7 +177,8 @@ override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallbac
 val document = org.jsoup.Jsoup.parse(responseText)
 
   // 2. Tìm đoạn script chứa jwplayer
-    val scriptTag = document.lines().find { it.contains("jwplayer(\"javhd\").setup") } ?: return false
+    //val scriptTag = document.lines().find { it.contains("jwplayer(\"javhd\").setup") } ?: return false
+    val scriptTag = document.select("script").find { it.html().contains("jwplayer(\"javhd\").setup") } ?: return false
 val scriptContent = scriptTag.html()
     // 3. Sử dụng Regex tìm chuỗi Base64
     val pattern = """window\.atob\("([^"]+)"\)""".toRegex()
