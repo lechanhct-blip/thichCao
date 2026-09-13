@@ -28,12 +28,7 @@ class ExampleProvider : MainAPI() { // All providers must be an instance of Main
     // Enable this when your provider has a main page
     override val hasMainPage = true
  override var mainUrl = "https://javhdz.ac"
-   private val defaultHeaders = mapOf(
-        "User-Agent" to "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36",
-        "Accept" to "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-        "Accept-Language" to "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Referer" to mainUrl
-    )
+
     override val mainPage = mainPageOf(
         "/video/" to "video",
         "/trending/" to "trending",
@@ -175,14 +170,14 @@ private fun Element.toSearchResult(): SearchResponse? {
         )
 
 
-        return newMovieLoadResponse(ten_phim, url, TvType.NSFW, url) {
+        return newMovieLoadResponse(ten_phim, url, TvType.NSFW, decodedUrl) {
             this.posterUrl = hinh
             this.plot = thong_tin?.toString()
 
         }
     }
 
-override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallback: (SubtitleFile) -> Unit, callback: (ExtractorLink) -> Unit): Boolean {
+override suspend fun loadLinks(decodedUrl: String, isCasting: Boolean, subtitleCallback: (SubtitleFile) -> Unit, callback: (ExtractorLink) -> Unit): Boolean {
 /*
 // 1. Thêm Header giả lập trình duyệt để tránh bị website chặn ngầm
     val responseText = app.get(
@@ -206,10 +201,10 @@ val scriptContent = scriptTag.html()
     val decodedUrl = decodeBase64Custom(base64Encoded)
 */
 
-  val responseText = app.get(data, headers = defaultHeaders).text
+  //val responseText = app.get(data).text
 
         // 2. Gọi hàm bóc tách chuỗi URL trực tiếp từ HTML
-        val decodedUrl = extractMediaUrl(responseText)
+    //    val decodedUrl = extractMediaUrl(responseText)
         
     // 4. Kiểm tra và trả về link cho trình phát
     if (decodedUrl.startsWith("http")) {
@@ -392,30 +387,7 @@ private fun decodeBase64Custom(input: String): String {
     }
 
 
-    // Hàm bổ trợ giải mã Base64 thuần giúp tương thích hoàn toàn với Unit Test và mọi phiên bản Android
-    private fun decodeBase64Custom_(input: String): String {
-        val base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-        val cleanedInput = input.replace("=", "")
-        val bytes = ArrayList<Byte>()
-        var buffer = 0
-        var bufferLength = 0
-
-        for (char in cleanedInput) {
-            val value = base64Chars.indexOf(char)
-            if (value < 0) continue // Bỏ qua ký tự không hợp lệ
-
-            buffer = (buffer shl 6) or value
-            bufferLength += 6
-
-            if (bufferLength >= 8) {
-                bufferLength -= 8
-                val byteValue = (buffer shr bufferLength) and 0xFF
-                bytes.add(byteValue.toByte())
-            }
-        }
-        return String(bytes.toByteArray(), Charsets.UTF_8)
-    }
- 
+   
 
 
     
