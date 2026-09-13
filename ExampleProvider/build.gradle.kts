@@ -8,7 +8,6 @@ version = 1821
 
 cloudstream {
     // All of these properties are optional, you can safely remove any of them.
-setPluginName("JAVHDZ")
     description = "Lorem ipsum"
     authors = listOf("Cloudburst", "ngoctan")
 
