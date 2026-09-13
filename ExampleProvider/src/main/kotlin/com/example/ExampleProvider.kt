@@ -169,6 +169,7 @@ override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallbac
         val scriptTag = doc.select("script").find{it.html().contains("jwplayer(\"javhd\").setup")}
         val scriptConntent = scriptTag?.html()
         val response = scriptConntent.toString()
+        val regex = """window\.atob\("([^"]+)"\)""".toRegex()
         val matchResult = regex.find(response)
         val base64Encoded = matchResult?.groupValues[1].toString()
                 
