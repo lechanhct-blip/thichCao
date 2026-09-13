@@ -48,6 +48,17 @@ class ExampleProvider : MainAPI() { // All providers must be an instance of Main
         val responseList  = document.select("a.movie-item").mapNotNull { it.toSearchResult() }
         return newHomePageResponse(HomePageList(request.name, responseList, isHorizontalImages = true),hasNext = true)
     }
+
+ override fun getVideoInterceptor(extractorLink: ExtractorLink): okhttp3.Interceptor {
+        return okhttp3.Interceptor { chain ->
+            val request = chain.request().newBuilder()
+                .header("User-Agent", "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36")
+                .header("Referer", mainUrl)
+                .build()
+            chain.proceed(request)
+        }
+    }
+ 
 private fun Element.toSearchResult(): SearchResponse? {
         //tìm thẻ liên kết
         val anchor = this.selectFirst("a.movie-item")?: return null
