@@ -167,7 +167,7 @@ private fun Element.toSearchResult(): SearchResponse? {
 override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallback: (SubtitleFile) -> Unit, callback: (ExtractorLink) -> Unit): Boolean {
 
 // 1. Thêm Header giả lập trình duyệt để tránh bị website chặn ngầm
-    val response = app.get(
+    val responseText = app.get(
         data,
         headers = mapOf(
             "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
