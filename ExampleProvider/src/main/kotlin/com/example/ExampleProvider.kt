@@ -56,7 +56,7 @@ private fun Element.toSearchResult(): SearchResponse? {
         var tenphim = anchor.attr("title").ifEmpty {
             this.selectFirst(".movie-title-1")?.text()
         } ?: return null
-        val duong_dan = fixUrlNull(anchor?.attr("href"))
+        val duong_dan = fixUrlNull(anchor.attr("href"))?:""
         val hinh = fixUrlNull(this.selectFirst("img.public-film-item-thumb")?.attr("src"))
 
         val luot_xem = this.selectFirst(".meta-viewed")?.text()
