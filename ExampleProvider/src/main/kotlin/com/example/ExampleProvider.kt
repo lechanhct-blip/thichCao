@@ -177,7 +177,7 @@ private fun Element.toSearchResult(): SearchResponse? {
         }
     }
 
-override suspend fun loadLinks(decodedUrl: String, isCasting: Boolean, subtitleCallback: (SubtitleFile) -> Unit, callback: (ExtractorLink) -> Unit): Boolean {
+override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallback: (SubtitleFile) -> Unit, callback: (ExtractorLink) -> Unit): Boolean {
 /*
 // 1. Thêm Header giả lập trình duyệt để tránh bị website chặn ngầm
     val responseText = app.get(
