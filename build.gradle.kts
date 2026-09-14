@@ -153,3 +153,10 @@ gradle.projectsEvaluated {
         }
     }
 }
+
+
+subprojects {
+    tasks.matching { it.name == "writeCacheEntry" }.configureEach {
+        mustRunAfter(tasks.matching { it.name == "make" || it.name == "assemble" })
+    }
+}
