@@ -132,7 +132,7 @@ override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallbac
         val extractor = newExtractorLink(
             source = this.name,
             name = "Server VIP",
-            url = decodedUrl
+            url = data
         )
         callback.invoke(extractor)
         return true
