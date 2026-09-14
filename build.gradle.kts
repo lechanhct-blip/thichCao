@@ -115,3 +115,6 @@ subprojects {
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
+tasks.matching { it.name == "writeCacheEntry" }.configureEach {
+    dependsOn(tasks.matching { it.name == "make" })
+}
