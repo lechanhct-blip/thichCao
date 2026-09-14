@@ -14,7 +14,7 @@ cloudstream {
     * 3: Beta-only
     **/
     status = 1 // Will be 3 if unspecified
-types = setOf(TvType.NSFW)
+    types = setOf(com.lagradost.cloudstream3.TvType.NSFW)
     //tvTypes = listOf("NSFW")
     //dong nay de kiem tra thu muc RES
     //requiresResources = false
