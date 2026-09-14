@@ -135,3 +135,27 @@ subprojects {
         enabled = false
     }
 }
+
+
+
+// Task gom tất cả plugin metadata thành file plugins.json ở root
+tasks.register("makePluginsJson") {
+    group = "cloudstream"
+    description = "Tạo file plugins.json chứa danh sách tất cả provider"
+
+    // Chạy sau khi tất cả task 'make' đã hoàn thành
+    dependsOn(tasks.named("makeAll"))
+
+    doLast {
+        val pluginsList = mutableListOf<Map<String, Any?>>()
+
+        subprojects.forEach { subproject ->
+            val jsonFile = subproject.file("build/manifest.json") // Hoặc manifest do plugin sinh ra
+            if (jsonFile.exists()) {
+                // Đọc metadata của provider từ subproject
+                val jsonText = jsonFile.readText()
+                // Thêm vào danh sách tổng
+            }
+        }
+    }
+}
