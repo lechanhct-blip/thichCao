@@ -38,17 +38,12 @@ jobs:
       - name: Build Plugins and Generate Combined plugins.json
         run: |
           chmod +x gradlew
-
-          # Ép xóa sạch build cũ để cập nhật version mới từ .kts
           ./gradlew clean makeAll --no-build-cache --stacktrace
-          ./gradlew makeAll --stacktrace
 
           mkdir -p $GITHUB_WORKSPACE/dist
 
-          # Copy toàn bộ file .cs3 vào thư mục dist
           find . -path "./dist" -prune -o -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/dist \;
 
-          # Script Python tạo file repository JSON đúng chuẩn CloudStream
           python3 -c '
           import os, json, glob, zipfile
 
@@ -64,9 +59,15 @@ jobs:
                               data = json.load(f)
                               cs3_name = os.path.basename(cs3_file)
                               
-                              # FIX: Đổi link raw trỏ đúng về branch builds (hoặc main tùy nơi bạn deploy)
                               data["url"] = f"https://raw.githubusercontent.com/{repo}/builds/{cs3_name}"
                               
+                              # BẮT BUỘC: Đảm bảo luôn có các trường này ngay cả khi file manifest bị thiếu
+                              if "authors" not in data or not data["authors"]:
+                                  data["authors"] = ["lechanh"]
+                              if "tvTypes" not in data or not data["tvTypes"]:
+                                  data["tvTypes"] = ["NSFW"]
+                              if "description" not in data:
+                                  data["description"] = "No description"
                               if "status" not in data:
                                   data["status"] = 1
                               if "apiVersion" not in data:
@@ -76,13 +77,10 @@ jobs:
               except Exception as e:
                   print(f"Error processing {cs3_file}: {e}")
 
-          # FIX CHUẨN: Bọc danh sách vào object repository với key "plugins"
+          # Format Repository chuẩn không chứa vòng lặp pluginLists
           repo_data = {
               "name": "ThichCao Repository",
               "manifestVersion": 1,
-              "pluginLists": [
-                  f"https://raw.githubusercontent.com/{repo}/builds/plugins.json"
-              ],
               "plugins": plugin_list
           }
 
