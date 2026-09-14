@@ -5,7 +5,6 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.kotlin.dsl.register
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
-
 buildscript {
     repositories {
         google()
@@ -35,18 +34,16 @@ allprojects {
     }
 }
 
-fun Project.cloudstream(configuration: CloudstreamExtension.() -> Unit) = extensions.getByName<CloudstreamExtension>("cloudstream").configuration()
+fun Project.cloudstream(configuration: CloudstreamExtension.() -> Unit) = 
+    extensions.getByName<CloudstreamExtension>("cloudstream").configuration()
 
 fun Project.android(configuration: LibraryExtension.() -> Unit) {
     extensions.getByName<LibraryExtension>("android").apply {
         project.extensions.findByType(JavaPluginExtension::class.java)?.apply {
-            // Use Java 17 toolchain even if a higher JDK runs the build.
-            // We still use Java 8 for now which higher JDKs have deprecated.
             toolchain {
                 languageVersion.set(JavaLanguageVersion.of(17))
             }
         }
-
         configuration()
     }
 }
@@ -76,19 +73,6 @@ subprojects {
             sourceCompatibility = JavaVersion.VERSION_1_8
             targetCompatibility = JavaVersion.VERSION_1_8
         }
-
-// Sửa lỗi Input Validation của Gradle 9.x cho WriteCacheEntryTask
-    tasks.matching { it.name == "writeCacheEntry" }.configureEach {
-        // Tự động tạo trước file rỗng để Gradle 9.x không đánh fail bước Validation
-        val cs3File = layout.buildDirectory.file("${project.name}.cs3").get().asFile
-        if (!cs3File.exists()) {
-            cs3File.parentFile.mkdirs()
-            cs3File.createNewFile()
-        }
-        
-        // Ép phụ thuộc vào task tạo plugin
-        dependsOn(tasks.matching { it.name == "make" || it.name == "build" })
-    }
     }
 
     tasks.withType<KotlinJvmCompile> {
@@ -102,12 +86,12 @@ subprojects {
             )
         }
     }
+
     dependencies {
         val implementation by configurations
         val cloudstream by configurations
         cloudstream("com.lagradost:cloudstream3:pre-release")
 
-        // Other dependencies
         implementation(kotlin("stdlib"))
         implementation("com.github.Blatzar:NiceHttp:0.4.17")
         implementation("org.jsoup:jsoup:1.22.1")
@@ -121,36 +105,21 @@ subprojects {
         implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
         implementation("com.github.vidstige:jadb:v1.2.1")
         implementation("org.bouncycastle:bcpkix-jdk15on:1.70")
+    }
 
+    // FIX LỖI GRADLE 9+: Ép subproject tự sinh file placeholder trước khi Task Validation diễn ra
+    afterEvaluate {
+        tasks.matching { it.name == "writeCacheEntry" }.configureEach {
+            val cs3File = layout.buildDirectory.file("${project.name}.cs3").get().asFile
+            if (!cs3File.exists()) {
+                cs3File.parentFile.mkdirs()
+                cs3File.createNewFile()
+            }
+            dependsOn(tasks.matching { it.name == "make" || it.name == "build" })
+        }
     }
 }
 
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
-}
-tasks.matching { it.name == "writeCacheEntry" }.configureEach {
-    dependsOn(tasks.matching { it.name == "make" })
-}
-
-
-// Ép Gradle luôn luôn thực thi task đóng gói .cs3 trước khi kiểm tra cache
-tasks.matching { it.name == "writeCacheEntry" }.configureEach {
-    mustRunAfter(tasks.matching { it.name == "build" || it.name == "make" })
-}
-
-
-// Khắc phục lỗi Task Validation của Gradle 9
-tasks.withType<com.lagradost.cloudstream3.gradle.tasks.WriteCacheEntryTask>().configureEach {
-    // 1. Ép writeCacheEntry phải chờ task make (tạo ra file .cs3) hoàn thành trước
-    dependsOn(tasks.matching { it.name == "make" || it.name == "build" })
-    
-    // 2. Tắt kiểm tra file tồn tại lúc Validation (nếu file chưa sinh ra)
-    doFirst {
-        val cs3File = file("$buildDir/${project.name}.cs3")
-        if (!cs3File.exists()) {
-            println("Tự động tạo file placeholder cho ${cs3File.path}")
-            cs3File.parentFile.mkdirs()
-            cs3File.createNewFile()
-        }
-    }
 }
