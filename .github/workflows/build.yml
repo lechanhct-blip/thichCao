@@ -40,31 +40,39 @@ jobs:
           chmod +x gradlew
           ./gradlew makeAll --stacktrace
 
-          mkdir -p $GITHUB_WORKSPACE/builds
+          # Tạo thư mục chứa file xuất ra
+          mkdir -p $GITHUB_WORKSPACE/dist
 
-          # 1. Copy toàn bộ file .cs3 tìm thấy vào thư mục builds
-          find . -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/builds \;
+          # Copy toàn bộ file .cs3 vào thư mục dist (loại trừ chính thư mục dist để không bị lỗi cp)
+          find . -path "./dist" -prune -o -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/dist \;
 
-          # 2. Gom tất cả manifest.json tạm thành 1 file plugins.json duy nhất
+          # Chạy script Python tạo file plugins.json (đã sửa lỗi f-string)
           python3 -c '
           import os, json, glob
 
+          repo = os.getenv("GITHUB_REPOSITORY", "")
+          dist_dir = os.getenv("GITHUB_WORKSPACE") + "/dist"
           plugins = []
-          # Quét tất cả file manifest.json được sinh ra ở các thư mục build con
+
+          # Quét tất cả file manifest.json trong các thư mục build con
           for manifest_path in glob.glob("**/build/manifest.json", recursive=True):
               try:
                   with open(manifest_path, "r", encoding="utf-8") as f:
                       data = json.load(f)
-                      # Thêm URL tải file .cs3 tương ứng
                       cs3_name = data.get("name", "") + ".cs3"
-                      data["url"] = f"https://raw.githubusercontent.com/{os.getenv(\"GITHUB_REPOSITORY\")}/builds/{cs3_name}"
+                      data["url"] = f"https://raw.githubusercontent.com/{repo}/builds/{cs3_name}"
                       plugins.append(data)
               except Exception as e:
                   print(f"Error reading {manifest_path}: {e}")
 
-          # Ghi vào file plugins.json tổng
-          with open(f"{os.getenv(\"GITHUB_WORKSPACE\")}/builds/plugins.json", "w", encoding="utf-8") as f:
+          # Ghi ra file plugins.json tổng tại thư mục dist
+          with open(f"{dist_dir}/plugins.json", "w", encoding="utf-8") as f:
               json.dump(plugins, f, indent=4, ensure_ascii=False)
+          '
+
+          # Chuyển toàn bộ file ra thư mục builds để deploy
+          mkdir -p $GITHUB_WORKSPACE/builds
+          cp -r $GITHUB_WORKSPACE/dist/* $GITHUB_WORKSPACE/builds/
 
       - name: Push builds
         run: |
