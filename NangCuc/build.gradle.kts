@@ -14,8 +14,8 @@ cloudstream {
     * 3: Beta-only
     **/
     status = 1 // Will be 3 if unspecified
-
-    tvTypes = listOf("NSFW")
+types = setOf(TvType.NSFW)
+    //tvTypes = listOf("NSFW")
     //dong nay de kiem tra thu muc RES
     //requiresResources = false
     language = "vi"
