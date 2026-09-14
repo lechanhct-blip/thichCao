@@ -65,7 +65,6 @@ jobs:
           # Ghi vào file plugins.json tổng
           with open(f"{os.getenv(\"GITHUB_WORKSPACE\")}/builds/plugins.json", "w", encoding="utf-8") as f:
               json.dump(plugins, f, indent=4, ensure_ascii=False)
-          '
 
       - name: Push builds
         run: |
