@@ -40,32 +40,35 @@ jobs:
           chmod +x gradlew
           ./gradlew makeAll --stacktrace
 
-          # Tạo thư mục chứa file xuất ra
+          # Tạo thư mục đầu ra
           mkdir -p $GITHUB_WORKSPACE/dist
 
-          # Copy toàn bộ file .cs3 vào thư mục dist (loại trừ chính thư mục dist để không bị lỗi cp)
+          # Copy toàn bộ file .cs3 vào thư mục dist
           find . -path "./dist" -prune -o -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/dist \;
 
-          # Chạy script Python tạo file plugins.json (đã sửa lỗi f-string)
+          # Script Python đọc trực tiếp manifest từ file .cs3
           python3 -c '
-          import os, json, glob
+          import os, json, glob, zipfile
 
           repo = os.getenv("GITHUB_REPOSITORY", "")
           dist_dir = os.getenv("GITHUB_WORKSPACE") + "/dist"
           plugins = []
 
-          # Quét tất cả file manifest.json trong các thư mục build con
-          for manifest_path in glob.glob("**/build/manifest.json", recursive=True):
+          # Quét tất cả file .cs3 trong thư mục dist
+          for cs3_file in glob.glob(f"{dist_dir}/*.cs3"):
               try:
-                  with open(manifest_path, "r", encoding="utf-8") as f:
-                      data = json.load(f)
-                      cs3_name = data.get("name", "") + ".cs3"
-                      data["url"] = f"https://raw.githubusercontent.com/{repo}/builds/{cs3_name}"
-                      plugins.append(data)
+                  with zipfile.ZipFile(cs3_file, "r") as z:
+                      # File .cs3 thực chất là zip chứa file manifest.json bên trong
+                      if "manifest.json" in z.namelist():
+                          with z.open("manifest.json") as f:
+                              data = json.load(f)
+                              cs3_name = os.path.basename(cs3_file)
+                              data["url"] = f"https://raw.githubusercontent.com/{repo}/builds/{cs3_name}"
+                              plugins.append(data)
               except Exception as e:
-                  print(f"Error reading {manifest_path}: {e}")
+                  print(f"Error reading {cs3_file}: {e}")
 
-          # Ghi ra file plugins.json tổng tại thư mục dist
+          # Ghi ra file plugins.json tổng
           with open(f"{dist_dir}/plugins.json", "w", encoding="utf-8") as f:
               json.dump(plugins, f, indent=4, ensure_ascii=False)
           '
