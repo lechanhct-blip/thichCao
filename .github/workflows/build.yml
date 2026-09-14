@@ -96,7 +96,7 @@ jobs:
                 if desc_match:
                   info["description"] = desc_match.group(1)
 
-                status_match = re.search(r"status\s*=\s*[\"'](.*?)[\"']", content)
+                status_match = re.search(r"status\s*=\s*[\"']?(\d+)[\"']?", content)
                 if status_match:
                   info["status"] = int(status_match.group(1))
 
