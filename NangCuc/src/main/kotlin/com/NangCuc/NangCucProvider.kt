@@ -27,8 +27,9 @@ class NangCuc : MainAPI() {
     override val vpnStatus            = VPNStatus.MightBeNeeded
     // Enable this when your provider has a main page
     override val hasMainPage = true
-    override var mainUrl = "https://nangcuc.ws"
+    override var mainUrl = "https://daebaknews.co"
     override val mainPage = mainPageOf(
+     "1" to "ĐỀ XUẤT",
      "/" to "Trang chủ",
      "/regions/nhat-ban/" to "Nhật Bản",
      "/regions/trung-quoc/" to "Trung Quốc",
