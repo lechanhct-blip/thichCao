@@ -1,36 +1,24 @@
 name: Build
 
-# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#concurrency
 concurrency: 
   group: "build"
   cancel-in-progress: true
 
 on:
   workflow_dispatch:
+
 permissions:
-    contents: write
-  # push:
-  #   branches:
-  #     # choose your default branch
-  #     - master
-  #     - main
-  #   paths-ignore:
-  #     - '*.md'
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4 # Nên dùng v4 thay vì master đã cũ
-        # Xóa dòng path: "src" ở đây
-        
-        #uses: actions/checkout@master
-        #with:
-          #path: "src"
+        uses: actions/checkout@v4
 
       - name: Checkout builds
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
         with:
           ref: "builds"
           path: "builds"
@@ -39,25 +27,24 @@ jobs:
         run: rm -f $GITHUB_WORKSPACE/builds/*.cs3
 
       - name: Setup JDK 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
+          distribution: 'zulu'
           java-version: 17
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
+        uses: android-actions/setup-android@v3
 
       - name: Build Plugins
         run: |
           chmod +x gradlew
           
+          # Biên dịch toàn bộ các provider ra file .cs3
           ./gradlew makeAll --stacktrace
-          ./gradlew makePluginsJson -x writeCacheEntry --stacktrace
 
+          # Sao chép kết quả ra thư mục builds
           find . -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/builds \;
           cp build/plugins.json $GITHUB_WORKSPACE/builds || true
-
-       
-          
 
       - name: Push builds
         run: |
@@ -65,5 +52,5 @@ jobs:
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git add .
-          git commit --amend -m "Build $GITHUB_SHA" || exit 0   # do not error if nothing to commit
+          git commit --amend -m "Build $GITHUB_SHA" || exit 0
           git push --force
