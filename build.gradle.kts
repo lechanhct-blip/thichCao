@@ -108,7 +108,6 @@ subprojects {
     }
 
     afterEvaluate {
-        // Tự động tạo thư mục res cho subproject nếu chưa có
         val resDir = file("src/main/res")
         if (!resDir.exists()) {
             resDir.mkdirs()
@@ -120,11 +119,13 @@ tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
 
-// FIX: Gom chính xác toàn bộ task make trong từng subproject sau khi Gradle đã Evaluate xong
-tasks.register("makeAll") {
-    subprojects {
-        afterEvaluate {
-            this@register.dependsOn(tasks.matching { it.name == "make" })
+// FIX: Gom task 'make' đúng chuẩn Kotlin DSL không bị đụng độ Project Evaluation Lifecycle
+val makeAll = tasks.register("makeAll")
+
+subprojects {
+    afterEvaluate {
+        makeAll.configure {
+            dependsOn(tasks.matching { it.name == "make" })
         }
     }
 }
