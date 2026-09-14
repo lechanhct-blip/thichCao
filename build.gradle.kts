@@ -107,8 +107,17 @@ subprojects {
         implementation("org.bouncycastle:bcpkix-jdk15on:1.70")
     }
 
+
+
+
     // FIX LỖI GRADLE 9+: Ép subproject tự sinh file placeholder trước khi Task Validation diễn ra
     afterEvaluate {
+        // 1. Tự động tạo thư mục res nếu chưa có cho mọi provider
+        val resDir = file("src/main/res")
+        if (!resDir.exists()) {
+            resDir.mkdirs()
+        }
+
         tasks.matching { it.name == "writeCacheEntry" }.configureEach {
             val cs3File = layout.buildDirectory.file("${project.name}.cs3").get().asFile
             if (!cs3File.exists()) {
