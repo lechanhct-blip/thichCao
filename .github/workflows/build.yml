@@ -43,8 +43,8 @@ jobs:
           mkdir -p $GITHUB_WORKSPACE/dist
           find . -path "./dist" -prune -o -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/dist \;
 
-          # Tạo file script Python riêng để tránh lỗi cú pháp Bash
-          cat << 'EOF' > generate_json.py
+            # Tạo file script Python riêng để tránh lỗi cú pháp Bash
+            cat << 'EOF' > generate_json.py
           import os
           import json
           import glob
