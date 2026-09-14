@@ -47,7 +47,7 @@ jobs:
       - name: Build Plugins
         run: |
           chmod +x gradlew
-          ./gradlew :NangCuc:make makePluginsJson --stacktrace
+          ./gradlew :NangCuc:build makePluginsJson --stacktrace
           
           find . -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/builds \;
           cp build/plugins.json $GITHUB_WORKSPACE/builds
