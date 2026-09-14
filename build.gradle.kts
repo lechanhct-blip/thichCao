@@ -119,12 +119,20 @@ tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
 
-// FIX: Gom task 'make' đúng chuẩn Kotlin DSL không bị đụng độ Project Evaluation Lifecycle
-// Gom task 'make' bằng cách trỏ đích danh theo đường dẫn task thay vì quây tìm theo name
+// Gom tất cả task 'make' của subprojects một cách trực tiếp
 tasks.register("makeAll") {
     group = "cloudstream"
-    description = "Biên dịch tất cả provider"
+    description = "Biên dịch toàn bộ provider thành file .cs3"
     
-    // Đăng ký trực tiếp phụ thuộc vào task :make của tất cả subproject
-    dependsOn(subprojects.map { "${it.path}:make" })
+    // Ép phụ thuộc trực tiếp vào task make của từng provider
+    subprojects.forEach { subproject ->
+        dependsOn(subproject.tasks.matching { it.name == "make" })
+    }
+}
+
+// Tắt writeCacheEntry để không bị dính lỗi validation cs3File
+subprojects {
+    tasks.matching { it.name == "writeCacheEntry" }.configureEach {
+        enabled = false
+    }
 }
