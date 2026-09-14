@@ -107,29 +107,11 @@ subprojects {
         implementation("org.bouncycastle:bcpkix-jdk15on:1.70")
     }
 
-
-
-
-    // FIX LỖI GRADLE 9+: Ép subproject tự sinh file placeholder trước khi Task Validation diễn ra
     afterEvaluate {
-        // 1. Tự động tạo thư mục res nếu chưa có
+        // Tự động tạo thư mục res cho subproject nếu chưa có
         val resDir = file("src/main/res")
         if (!resDir.exists()) {
             resDir.mkdirs()
-        }
-
-       // 2. Ép writeCacheEntry tự tạo file .cs3 placeholder NGAY TRƯỚC KHI TASK CHẠY
-        tasks.matching { it.name == "writeCacheEntry" }.configureEach {
-            // Khóa thứ tự phụ thuộc task
-            dependsOn(tasks.matching { it.name == "make" || it.name == "build" })
-
-            doFirst {
-                val cs3File = layout.buildDirectory.file("${project.name}.cs3").get().asFile
-                if (!cs3File.exists()) {
-                    cs3File.parentFile.mkdirs()
-                    cs3File.createNewFile()
-                }
-            }
         }
     }
 }
@@ -138,18 +120,11 @@ tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
 
-
-
-// Gom tất cả các task make của mọi provider lại thành 1 task chính ở Root Project
+// FIX: Gom chính xác toàn bộ task make trong từng subproject sau khi Gradle đã Evaluate xong
 tasks.register("makeAll") {
-    group = "cloudstream"
-    description = "Biên dịch toàn bộ provider thành file .cs3"
-    dependsOn(subprojects.map { it.tasks.matching { t -> t.name == "make" } })
-}
-
-// Bỏ qua hẳn writeCacheEntry cho mọi subproject
-subprojects {
-    tasks.matching { it.name == "writeCacheEntry" }.configureEach {
-        enabled = false
+    subprojects {
+        afterEvaluate {
+            this@register.dependsOn(tasks.matching { it.name == "make" })
+        }
     }
 }
