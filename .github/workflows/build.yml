@@ -50,10 +50,8 @@ jobs:
         run: |
           chmod +x gradlew
           
-          ./gradlew clean make --no-build-cache --stacktrace
-          
-          
-          ./gradlew makePluginsJson --no-build-cache --stacktrace
+          ./gradlew make --stacktrace
+          ./gradlew makePluginsJson -x writeCacheEntry --stacktrace
 
           find . -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/builds \;
           cp build/plugins.json $GITHUB_WORKSPACE/builds || true
