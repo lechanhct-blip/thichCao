@@ -4,11 +4,11 @@ dependencies {
 }
 
 // Use an integer for version numbers
-version = 939
+version = 1034
 
 cloudstream {
     // All of these properties are optional, you can safely remove any of them.
-    description = "Lorem ipsum"
+    description = "jav hd"
     authors = listOf("ngoctan,lechanh")
 
     /**
@@ -18,7 +18,7 @@ cloudstream {
     * 2: Slow
     * 3: Beta-only
     **/
-    status = 3 // Will be 3 if unspecified
+    status = 1 // Will be 3 if unspecified
 
     tvTypes = listOf("NSFW")
     
