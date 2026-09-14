@@ -43,96 +43,125 @@ jobs:
           mkdir -p $GITHUB_WORKSPACE/dist
           find . -path "./dist" -prune -o -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/dist \;
 
-              # Tạo file script Python riêng để tránh lỗi cú pháp Bash
-              cat << 'EOF' > generate_json.py
+          cat << 'EOF' > generate_json.py
           import os
           import json
           import glob
-          import zipfile
           import re
 
           repo = os.getenv("GITHUB_REPOSITORY", "")
           workspace = os.getenv("GITHUB_WORKSPACE", "")
           dist_dir = os.path.join(workspace, "dist")
           plugin_list = []
+          # Tìm pluginClassName bằng cách quét file Kotlin
+          def find_plugin_class_name(provider_dir):
+            kotlin_dir = os.path.join(provider_dir, "src", "main", "kotlin")
+            if not os.path.exists(kotlin_dir):
+              return None
+        
+            for root, _, files in os.walk(kotlin_dir):
+              for file in files:
+                if file.endswith(".kt"):
+                  path = os.path.join(root, file)
+                  with open(path, "r", encoding="utf-8") as f:
+                    content = f.read()
+                    if "@CloudstreamPlugin" in content:
+                        pkg_match = re.search(r"package\s+([\w\.]+)", content)
+                        class_match = re.search(r"class\s+(\w+)", content)
+                        if pkg_match and class_match:
+                            return f"{pkg_match.group(1)}.{class_match.group(1)}"
+            return None
+
 
           def parse_gradle_kts(provider_name):
             info = {}
-            kts_path = os.path.join(workspace, provider_name, "build.gradle.kts")
+            provider_dir = os.path.join(workspace, provider_name)
+            kts_path = os.path.join(provider_dir, "build.gradle.kts")
+    
             if os.path.exists(kts_path):
               with open(kts_path, "r", encoding="utf-8") as f:
                 content = f.read()
+                # Tác giả
                 authors_match = re.search(r"authors\s*=\s*listOf\((.*?)\)", content)
                 if authors_match:
-                  authors_raw = authors_match.group(1)
-                  info["authors"] = [a.strip().strip("\"'") for a in authors_raw.split(",")]
+                  info["authors"] = [a.strip().strip("\"'") for a in authors_match.group(1).split(",")]
 
+                  # Ngôn ngữ
                 lang_match = re.search(r"language\s*=\s*[\"'](.*?)[\"']", content)
                 if lang_match:
                   info["language"] = lang_match.group(1)
 
+                # Mô tả
                 desc_match = re.search(r"description\s*=\s*[\"'](.*?)[\"']", content)
                 if desc_match:
                   info["description"] = desc_match.group(1)
 
+                # Icon
                 icon_match = re.search(r"iconUrl\s*=\s*[\"'](.*?)[\"']", content)
                 if icon_match:
                   info["iconUrl"] = icon_match.group(1)
+                
+                # TV Types
+                tv_match = re.search(r"tvTypes\s*=\s*listOf\((.*?)\)", content)
+                if tv_match:
+                  info["tvTypes"] = [t.strip().strip("\"'") for t in tv_match.group(1).split(",")]
+
+            # Tự động quét pluginClassName từ file code .kt
+            info["pluginClassName"] = find_plugin_class_name(provider_dir) or f"com.example.{provider_name}Plugin"
             return info
 
+          # Quét thẳng danh sách các file .cs3 trong thư mục dist
           for cs3_file in glob.glob(os.path.join(dist_dir, "*.cs3")):
-            try:
-              with zipfile.ZipFile(cs3_file, "r") as z:
-                if "manifest.json" in z.namelist():
-                  with z.open("manifest.json") as f:
-                    data = json.load(f)
-                    cs3_name = os.path.basename(cs3_file)
-                    provider_name = os.path.splitext(cs3_name)[0]
-                    
-                    cs3_url = f"https://raw.githubusercontent.com/{repo}/builds/{cs3_name}"
-                    data["url"] = cs3_url
-                    data["pluginUrl"] = cs3_url
-                    data["fileSize"] = os.path.getsize(cs3_file)
-                    data["repositoryUrl"] = f"https://github.com/{repo}"
-                    
-                    kts_info = parse_gradle_kts(provider_name)
-                    
-                    if "authors" not in data or not data["authors"]:
-                        data["authors"] = kts_info.get("authors", ["Unknown"])
-                    if "language" not in data or not data["language"]:
-                        data["language"] = kts_info.get("language", "vi")
-                    if "description" not in data or not data["description"]:
-                        data["description"] = kts_info.get("description", "")
-                    if "iconUrl" not in data or not data["iconUrl"]:
-                        data["iconUrl"] = kts_info.get("iconUrl", "")
+            cs3_name = os.path.basename(cs3_file)
+            provider_name = os.path.splitext(cs3_name)[0]
+  
+            kts_info = parse_gradle_kts(provider_name)
+            cs3_url = f"https://raw.githubusercontent.com/{repo}/builds/{cs3_name}"
+    
+            plugin_data = {
+              "name": provider_name,
+              "internalName": provider_name,
+              "pluginClassName": kts_info["pluginClassName"],
+              "version": 1,
+              "url": cs3_url,
+              "pluginUrl": cs3_url,
+              "fileSize": os.path.getsize(cs3_file),
+              "status": 1,
+              "apiVersion": 1,
+              "authors": kts_info.get("authors", ["Unknown"]),
+              "language": kts_info.get("language", "vi"),
+              "description": kts_info.get("description", ""),
+              "iconUrl": kts_info.get("iconUrl", ""),
+              "tvTypes": kts_info.get("tvTypes", ["Movie"]),
+              "repositoryUrl": f"https://github.com/{repo}"
+            }
+    
+            plugin_list.append(plugin_data)
 
-                    if "status" not in data:
-                        data["status"] = 1
-                    if "apiVersion" not in data:
-                        data["apiVersion"] = 1
-                    
-                    plugin_list.append(data)
-            except Exception as e:
-              print(f"Error processing {cs3_file}: {e}")
-              
-          # 1. Xuất file list.json (chứa mảng các plugin)
+          # 1. Xuất list.json
           with open(os.path.join(dist_dir, "list.json"), "w", encoding="utf-8") as f:
             json.dump(plugin_list, f, indent=4, ensure_ascii=False)
-          # 2. Xuất file root plugins.json
+
+          # 2. Xuất plugins.json
           repo_manifest = {
             "name": "CaoCao Repo",
             "description": "Kho nguồn phim CaoCao",
             "manifestVersion": 1,
             "pluginLists": [
-              f"https://raw.githubusercontent.com/{repo}/builds/list.json"
-            ]
-          }
+            f"https://raw.githubusercontent.com/{repo}/builds/list.json"
+          ]
+
+
+
+
+          
 
           with open(os.path.join(dist_dir, "plugins.json"), "w", encoding="utf-8") as f:
             json.dump(repo_manifest, f, indent=4, ensure_ascii=False)
           EOF
-            # Chạy file python vừa tạo
+
             python3 generate_json.py
+
             mkdir -p $GITHUB_WORKSPACE/builds
             cp -r $GITHUB_WORKSPACE/dist/* $GITHUB_WORKSPACE/builds/
 
