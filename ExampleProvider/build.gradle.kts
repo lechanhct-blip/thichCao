@@ -4,7 +4,7 @@ dependencies {
 }
 
 // Use an integer for version numbers
-version = 536
+version = 939
 
 cloudstream {
     // All of these properties are optional, you can safely remove any of them.
@@ -18,7 +18,7 @@ cloudstream {
     * 2: Slow
     * 3: Beta-only
     **/
-    status = 1 // Will be 3 if unspecified
+    status = 3 // Will be 3 if unspecified
 
     tvTypes = listOf("NSFW")
     
