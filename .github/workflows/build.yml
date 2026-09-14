@@ -38,6 +38,9 @@ jobs:
       - name: Build Plugins and Generate Combined plugins.json
         run: |
           chmod +x gradlew
+
+          # Ép xóa sạch build cũ để cập nhật version mới từ .kts
+          ./gradlew clean makeAll --no-build-cache --stacktrace
           ./gradlew makeAll --stacktrace
 
           mkdir -p $GITHUB_WORKSPACE/dist
