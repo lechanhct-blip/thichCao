@@ -50,7 +50,7 @@ jobs:
         run: |
           chmod +x gradlew
           
-          ./gradlew make --stacktrace
+          ./gradlew makeAll --stacktrace
           ./gradlew makePluginsJson -x writeCacheEntry --stacktrace
 
           find . -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/builds \;
