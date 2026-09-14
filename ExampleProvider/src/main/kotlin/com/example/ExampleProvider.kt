@@ -207,11 +207,11 @@ val scriptContent = scriptTag.html()
     //    val decodedUrl = extractMediaUrl(responseText)
         
     // 4. Kiểm tra và trả về link cho trình phát
-    if (decodedUrl.startsWith("http")) {
+    if (data.startsWith("http")) {
         val extractor = newExtractorLink(
             source = this.name,
             name = "Server VIP",
-            url = decodedUrl
+            url = data
         )
         callback.invoke(extractor)
         return true
