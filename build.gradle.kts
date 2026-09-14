@@ -156,9 +156,8 @@ gradle.projectsEvaluated {
 
 
 gradle.taskGraph.whenReady {
-    alltasks.filter { it.name == "writeCacheEntry" }.forEach { task ->
-        val project = task.project
-        val cs3File = project.file("${project.layout.buildDirectory.get().asFile}/${project.name}.cs3")
+    allTasks.filter { it.name == "writeCacheEntry" }.forEach { task ->
+        val cs3File = task.project.file("${task.project.layout.buildDirectory.get().asFile}/${task.project.name}.cs3")
         if (!cs3File.exists()) {
             cs3File.parentFile.mkdirs()
             cs3File.createNewFile()
