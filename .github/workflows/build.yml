@@ -97,8 +97,8 @@ jobs:
                   info["description"] = desc_match.group(1)
 
                 status_match = re.search(r"status\s*=\s*[\"'](.*?)[\"']", content)
-                if desc_match:
-                  info["status"] = status_match.group(1)
+                if status_match:
+                  info["status"] = int(status_match.group(1))
 
                 # Icon
                 icon_match = re.search(r"iconUrl\s*=\s*[\"'](.*?)[\"']", content)
