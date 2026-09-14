@@ -35,22 +35,21 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Build Plugins and Generate JSON
+      - name: Build Plugins and Generate plugins.json
         run: |
           chmod +x gradlew
-          # 1. Biên dịch toàn bộ file .cs3
+          
+          # 1. Chạy task makeAll để build toàn bộ file .cs3
           ./gradlew makeAll --stacktrace
 
-          # 2. Tạo file plugins.json
-          ./gradlew makePluginsJson --stacktrace || true
+          # 2. Định hình lại task makePluginsJson có sẵn của plugin
+          ./gradlew makePluginsJson --stacktrace
 
-          # 3. Tạo thư mục chứa output để đăng tải
+          # 3. Tạo thư mục chứa file đầu ra
           mkdir -p $GITHUB_WORKSPACE/builds
 
-          # 4. Copy toàn bộ file .cs3 tìm thấy
+          # 4. Copy toàn bộ file .cs3 và plugins.json vào thư mục builds
           find . -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/builds \;
-
-          # 5. Copy file plugins.json (nếu nằm trong thư mục build gốc hoặc subproject)
           find . -name "plugins.json" -exec cp {} $GITHUB_WORKSPACE/builds \;
 
       - name: Push builds
