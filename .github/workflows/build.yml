@@ -68,17 +68,17 @@ jobs:
                   info["authors"] = [a.strip().strip("\"'") for a in authors_raw.split(",")]
 
                 lang_match = re.search(r"language\s*=\s*[\"'](.*?)[\"']", content)
-            if lang_match:
-                info["language"] = lang_match.group(1)
+                if lang_match:
+                  info["language"] = lang_match.group(1)
 
-            desc_match = re.search(r"description\s*=\s*[\"'](.*?)[\"']", content)
-            if desc_match:
-                info["description"] = desc_match.group(1)
+                desc_match = re.search(r"description\s*=\s*[\"'](.*?)[\"']", content)
+                if desc_match:
+                  info["description"] = desc_match.group(1)
 
-            icon_match = re.search(r"iconUrl\s*=\s*[\"'](.*?)[\"']", content)
-            if icon_match:
-                info["iconUrl"] = icon_match.group(1)
-          return info
+                icon_match = re.search(r"iconUrl\s*=\s*[\"'](.*?)[\"']", content)
+                if icon_match:
+                  info["iconUrl"] = icon_match.group(1)
+            return info
 
           for cs3_file in glob.glob(os.path.join(dist_dir, "*.cs3")):
             try:
