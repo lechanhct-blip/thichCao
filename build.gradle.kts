@@ -118,3 +118,9 @@ tasks.register<Delete>("clean") {
 tasks.matching { it.name == "writeCacheEntry" }.configureEach {
     dependsOn(tasks.matching { it.name == "make" })
 }
+
+
+// Ép Gradle luôn luôn thực thi task đóng gói .cs3 trước khi kiểm tra cache
+tasks.matching { it.name == "writeCacheEntry" }.configureEach {
+    mustRunAfter(tasks.matching { it.name == "build" || it.name == "make" })
+}
