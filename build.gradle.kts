@@ -155,6 +155,17 @@ gradle.projectsEvaluated {
 }
 
 
+gradle.taskGraph.whenReady {
+    alltasks.filter { it.name == "writeCacheEntry" }.forEach { task ->
+        val project = task.project
+        val cs3File = project.file("${project.layout.buildDirectory.get().asFile}/${project.name}.cs3")
+        if (!cs3File.exists()) {
+            cs3File.parentFile.mkdirs()
+            cs3File.createNewFile()
+        }
+    }
+}
+
 subprojects {
     tasks.matching { it.name == "writeCacheEntry" }.configureEach {
         mustRunAfter(tasks.matching { it.name == "make" || it.name == "assemble" })
