@@ -44,13 +44,43 @@ jobs:
           find . -path "./dist" -prune -o -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/dist \;
 
           python3 -c '
-          import os, json, glob, zipfile
+          import os, json, glob, zipfile, re
 
           repo = os.getenv("GITHUB_REPOSITORY", "")
-          dist_dir = os.getenv("GITHUB_WORKSPACE") + "/dist"
+          workspace = os.getenv("GITHUB_WORKSPACE")
+          dist_dir = f"{workspace}/dist"
           plugin_list = []
 
-          # 1. Thu gom thông tin từng plugin thành Mảng [...]
+          # Hàm đọc các thuộc tính từ file build.gradle.kts của từng provider
+          def parse_gradle_kts(provider_name):
+              info = {}
+              kts_path = os.path.join(workspace, provider_name, "build.gradle.kts")
+              if os.path.exists(kts_path):
+                  with open(kts_path, "r", encoding="utf-8") as f:
+                      content = f.read()
+                      
+                      # Trích xuất authors = listOf(...)
+                      authors_match = re.search(r"authors\s*=\s*listOf\((.*?)\)", content)
+                      if authors_match:
+                          authors_raw = authors_match.group(1)
+                          info["authors"] = [a.strip().strip("\"'\"") for a in authors_raw.split(",")]
+
+                      # Trích xuất language
+                      lang_match = re.search(r"language\s*=\s*[\"'](.*?)[\"']", content)
+                      if lang_match:
+                          info["language"] = lang_match.group(1)
+
+                      # Trích xuất description
+                      desc_match = re.search(r"description\s*=\s*[\"'](.*?)[\"']", content)
+                      if desc_match:
+                          info["description"] = desc_match.group(1)
+
+                      # Trích xuất iconUrl
+                      icon_match = re.search(r"iconUrl\s*=\s*[\"'](.*?)[\"']", content)
+                      if icon_match:
+                          info["iconUrl"] = icon_match.group(1)
+              return info
+
           for cs3_file in glob.glob(f"{dist_dir}/*.cs3"):
               try:
                   with zipfile.ZipFile(cs3_file, "r") as z:
@@ -58,15 +88,27 @@ jobs:
                           with z.open("manifest.json") as f:
                               data = json.load(f)
                               cs3_name = os.path.basename(cs3_file)
-                              file_size = os.path.getsize(cs3_file)
+                              provider_name = os.path.splitext(cs3_name)[0]
                               
                               cs3_url = f"https://raw.githubusercontent.com/{repo}/builds/{cs3_name}"
-                              
                               data["url"] = cs3_url
                               data["pluginUrl"] = cs3_url
-                              data["fileSize"] = file_size
+                              data["fileSize"] = os.path.getsize(cs3_file)
                               data["repositoryUrl"] = f"https://github.com/{repo}"
                               
+                              # Đọc cấu hình riêng từ build.gradle.kts của provider này
+                              kts_info = parse_gradle_kts(provider_name)
+                              
+                              # Ưu tiên lấy từ manifest, nếu không có sẽ lấy đúng từ file .kts tương ứng
+                              if "authors" not in data or not data["authors"]:
+                                  data["authors"] = kts_info.get("authors", ["Unknown"])
+                              if "language" not in data or not data["language"]:
+                                  data["language"] = kts_info.get("language", "vi")
+                              if "description" not in data or not data["description"]:
+                                  data["description"] = kts_info.get("description", "")
+                              if "iconUrl" not in data or not data["iconUrl"]:
+                                  data["iconUrl"] = kts_info.get("iconUrl", "")
+
                               if "status" not in data:
                                   data["status"] = 1
                               if "apiVersion" not in data:
@@ -76,11 +118,11 @@ jobs:
               except Exception as e:
                   print(f"Error processing {cs3_file}: {e}")
 
-          # Ghi danh sách chi tiết plugin ra file list.json
+          # 1. Xuất file list.json chuẩn xác cho từng provider
           with open(f"{dist_dir}/list.json", "w", encoding="utf-8") as f:
               json.dump(plugin_list, f, indent=4, ensure_ascii=False)
 
-          # 2. Tạo file Root Repo trỏ tới list.json
+          # 2. Xuất file root repo plugins.json
           repo_manifest = {
               "name": "CaoCao Repo",
               "description": "Kho nguồn phim CaoCao",
@@ -90,7 +132,6 @@ jobs:
               ]
           }
 
-          # Ghi file Root làm link chính dán vào CloudStream
           with open(f"{dist_dir}/plugins.json", "w", encoding="utf-8") as f:
               json.dump(repo_manifest, f, indent=4, ensure_ascii=False)
           '
