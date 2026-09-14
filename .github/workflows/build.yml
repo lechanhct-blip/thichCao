@@ -38,12 +38,15 @@ jobs:
       - name: Build Plugins
         run: |
           chmod +x gradlew
-          
-          # Biên dịch toàn bộ các provider ra file .cs3
           ./gradlew makeAll --stacktrace
+          
           ./gradlew makePluginsJson -x writeCacheEntry --stacktrace
 
-          # Sao chép kết quả ra thư mục builds
+          
+          echo "=== Danh sách file .cs3 tìm thấy ==="
+            find . -name "*.cs3"
+
+          
           find . -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/builds \;
           cp build/plugins.json $GITHUB_WORKSPACE/builds || true
 
