@@ -140,7 +140,14 @@ tasks.register<Delete>("clean") {
 
 
 
-// Tắt hoàn toàn việc kiểm tra validation input file cho writeCacheEntry
+// Gom tất cả các task make của mọi provider lại thành 1 task chính ở Root Project
+tasks.register("makeAll") {
+    group = "cloudstream"
+    description = "Biên dịch toàn bộ provider thành file .cs3"
+    dependsOn(subprojects.map { it.tasks.matching { t -> t.name == "make" } })
+}
+
+// Bỏ qua hẳn writeCacheEntry cho mọi subproject
 subprojects {
     tasks.matching { it.name == "writeCacheEntry" }.configureEach {
         enabled = false
