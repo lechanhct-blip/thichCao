@@ -4,7 +4,7 @@ version = 1
 cloudstream {
     // All of these properties are optional, you can safely remove any of them.
     description = "Nang Cuc"
-    authors = listOf("NangCuc", "ngoctan")
+    authors = listOf("lechanh", "ngoctan")
 
     /**
     * Status int as one of the following:
