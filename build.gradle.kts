@@ -51,6 +51,7 @@ fun Project.android(configuration: LibraryExtension.() -> Unit) {
 subprojects {
     apply(plugin = "com.android.library")
     apply(plugin = "com.lagradost.cloudstream3.gradle")
+    apply(plugin = "kotlin-android") // THÊM PLUGIN KOTLIN ANDROID ĐỂ NHẬN SOURCE
 
     cloudstream {
         setRepo(System.getenv("GITHUB_REPOSITORY") ?: "https://github.com/lechanhct-blip/thichCao")
@@ -58,7 +59,8 @@ subprojects {
     }
 
     android {
-        namespace = "com.JAVHDZ"
+        // TỰ ĐỘNG LẤY NAMESPACE THEO TÊN SUBPROJECT (Xóa com.JAVHDZ cố định)
+        namespace = "com.lechanh.${project.name.lowercase()}"
         compileSdk = 36
 
         defaultConfig {
@@ -119,18 +121,15 @@ tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
 
-// Gom tất cả task 'make' của subprojects một cách trực tiếp
 tasks.register("makeAll") {
     group = "cloudstream"
     description = "Biên dịch toàn bộ provider thành file .cs3"
     
-    // Ép phụ thuộc trực tiếp vào task make của từng provider
     subprojects.forEach { subproject ->
         dependsOn(subproject.tasks.matching { it.name == "make" })
     }
 }
 
-// Tắt writeCacheEntry để không bị dính lỗi validation cs3File
 subprojects {
     tasks.matching { it.name == "writeCacheEntry" }.configureEach {
         enabled = false
