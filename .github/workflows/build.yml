@@ -149,7 +149,7 @@ jobs:
             plugin_list.append(plugin_data)
 
           # 1. Xuất list.json
-          with open(os.path.join(dist_dir, "list.json"), "w", encoding="utf-8") as f:
+          with open(os.path.join(dist_dir, "plugins.json"), "w", encoding="utf-8") as f:
             json.dump(plugin_list, f, indent=4, ensure_ascii=False)
 
           # 2. Xuất plugins.json
@@ -159,7 +159,7 @@ jobs:
             "description": "Kho nguồn phim CaoCao",
             "manifestVersion": 1,
             "pluginLists": [
-              f"https://raw.githubusercontent.com/{repo}/builds/list.json"
+              f"https://raw.githubusercontent.com/{repo}/builds/repo.json"
             ]
           }
 
