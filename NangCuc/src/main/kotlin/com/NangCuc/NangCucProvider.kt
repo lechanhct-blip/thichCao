@@ -52,7 +52,25 @@ class NangCuc : MainAPI() {
     }
 
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
-        val document = app.get("$mainUrl${request.data}page/$page").document
+        //val document = app.get("$mainUrl${request.data}page/$page").document
+
+        var document: Document? = null
+        if (request.data!="1") {
+            document = app.get("$mainUrl${request.data}page/$page").document
+        }else{
+            document = app.get("$mainUrl/page/$page").document
+
+            val docNavi = document.selectFirst("ul.pagination")
+            val number = docNavi?.select("li.page-item a")?.get(3)?.text()
+            val totalPage = number?.toIntOrNull()?:3 // 70
+            //val nn = pageNumber
+            // val numberrandom = (1..100 ).random()
+
+            //val pageNumber = number?.toIntOrNull() ?: 100
+            val nPage = (3..(totalPage-3).coerceAtLeast(3)).random()
+            document = app.get("$mainUrl/page/$nPage").document
+        }
+     
 //        val responseList  = document.select(".thumbnail").mapNotNull { it.toSearchResult() }
         val responseList  = document.select("div.flw-item").mapNotNull { it.toSearchResult() }
         return newHomePageResponse(HomePageList(request.name, responseList, isHorizontalImages = true),hasNext = true)
