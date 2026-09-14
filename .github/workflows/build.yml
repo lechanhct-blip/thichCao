@@ -40,13 +40,12 @@ jobs:
           chmod +x gradlew
           ./gradlew makeAll --stacktrace
 
-          # Tạo thư mục đầu ra
           mkdir -p $GITHUB_WORKSPACE/dist
 
           # Copy toàn bộ file .cs3 vào thư mục dist
           find . -path "./dist" -prune -o -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/dist \;
 
-          # Script Python đọc trực tiếp manifest từ file .cs3
+          # Script Python giải nén manifest và chuẩn hóa format cho CloudStream
           python3 -c '
           import os, json, glob, zipfile
 
@@ -54,26 +53,32 @@ jobs:
           dist_dir = os.getenv("GITHUB_WORKSPACE") + "/dist"
           plugins = []
 
-          # Quét tất cả file .cs3 trong thư mục dist
           for cs3_file in glob.glob(f"{dist_dir}/*.cs3"):
               try:
                   with zipfile.ZipFile(cs3_file, "r") as z:
-                      # File .cs3 thực chất là zip chứa file manifest.json bên trong
                       if "manifest.json" in z.namelist():
                           with z.open("manifest.json") as f:
                               data = json.load(f)
                               cs3_name = os.path.basename(cs3_file)
+                              
+                              # Bắt buộc: Đảm bảo có URL hợp lệ dẫn đến file .cs3
                               data["url"] = f"https://raw.githubusercontent.com/{repo}/builds/{cs3_name}"
+                              
+                              # Ép kiểu dữ liệu chuẩn CloudStream yêu cầu
+                              if "version" in data:
+                                  data["version"] = int(data["version"])
+                              if "status" in data:
+                                  data["status"] = int(data["status"])
+                              
                               plugins.append(data)
               except Exception as e:
-                  print(f"Error reading {cs3_file}: {e}")
+                  print(f"Error processing {cs3_file}: {e}")
 
-          # Ghi ra file plugins.json tổng
           with open(f"{dist_dir}/plugins.json", "w", encoding="utf-8") as f:
               json.dump(plugins, f, indent=4, ensure_ascii=False)
           '
 
-          # Chuyển toàn bộ file ra thư mục builds để deploy
+          # Đưa kết quả ra thư mục builds để GitHub Pages/Release nhận diện
           mkdir -p $GITHUB_WORKSPACE/builds
           cp -r $GITHUB_WORKSPACE/dist/* $GITHUB_WORKSPACE/builds/
 
