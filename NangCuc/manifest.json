@@ -3,4 +3,5 @@
   "pluginClassName": "com.NangCuc.NangCucPlugin",
   "authors": ["YourName"],
   "description": "Provider NangCuc"
+  "requiresResources": false
 }
