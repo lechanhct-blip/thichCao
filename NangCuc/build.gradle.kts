@@ -23,6 +23,5 @@ cloudstream {
     // Random CC logo I found
     iconUrl = "https://upload.wikimedia.org/wikipedia/commons/2/2f/Korduene_Logo.png"
 
-// Class chính chứa @CloudstreamPlugin (ví dụ: com.NangCuc.NangCucPlugin)
-    providerClass = "com.NangCuc.NangCucPlugin"
+
 }
