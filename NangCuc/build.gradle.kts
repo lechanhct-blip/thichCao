@@ -4,7 +4,7 @@ version = 1028
 cloudstream {
     // All of these properties are optional, you can safely remove them
 
-    description = "ngangcuc"
+    description = "nang cuc hang fake"
     language    = "vi"
     authors = listOf("HindiProviders")
 
