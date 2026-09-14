@@ -2,7 +2,6 @@
 version = 1
 
 cloudstream {
-setPluginName("NangCuc")
     // All of these properties are optional, you can safely remove any of them.
     description = "Nang Cuc"
     authors = listOf("NangCuc", "ngoctan")
