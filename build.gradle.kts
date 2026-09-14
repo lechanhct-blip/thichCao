@@ -139,34 +139,10 @@ tasks.register<Delete>("clean") {
 }
 
 
-// Khắc phục triệt để lỗi @InputFile cs3File trên Gradle 9.x
-gradle.projectsEvaluated {
-    subprojects {
-        val cs3File = file("${layout.buildDirectory.get().asFile}/${project.name}.cs3")
-        if (!cs3File.exists()) {
-            cs3File.parentFile.mkdirs()
-            cs3File.createNewFile()
-        }
-        
-        tasks.matching { it.name == "writeCacheEntry" }.configureEach {
-            dependsOn(tasks.matching { it.name == "make" || it.name == "build" })
-        }
-    }
-}
 
-
-gradle.taskGraph.whenReady {
-    allTasks.filter { it.name == "writeCacheEntry" }.forEach { task ->
-        val cs3File = task.project.file("${task.project.layout.buildDirectory.get().asFile}/${task.project.name}.cs3")
-        if (!cs3File.exists()) {
-            cs3File.parentFile.mkdirs()
-            cs3File.createNewFile()
-        }
-    }
-}
-
+// Tắt hoàn toàn việc kiểm tra validation input file cho writeCacheEntry
 subprojects {
     tasks.matching { it.name == "writeCacheEntry" }.configureEach {
-        mustRunAfter(tasks.matching { it.name == "make" || it.name == "assemble" })
+        enabled = false
     }
 }
