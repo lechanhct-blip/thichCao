@@ -35,22 +35,37 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Build Plugins and Generate plugins.json
+      - name: Build Plugins and Generate Combined plugins.json
         run: |
           chmod +x gradlew
-          
-          # 1. Chạy task makeAll để build toàn bộ file .cs3
           ./gradlew makeAll --stacktrace
 
-          # 2. Định hình lại task makePluginsJson có sẵn của plugin
-          ./gradlew makePluginsJson --stacktrace
-
-          # 3. Tạo thư mục chứa file đầu ra
           mkdir -p $GITHUB_WORKSPACE/builds
 
-          # 4. Copy toàn bộ file .cs3 và plugins.json vào thư mục builds
+          # 1. Copy toàn bộ file .cs3 tìm thấy vào thư mục builds
           find . -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/builds \;
-          find . -name "plugins.json" -exec cp {} $GITHUB_WORKSPACE/builds \;
+
+          # 2. Gom tất cả manifest.json tạm thành 1 file plugins.json duy nhất
+          python3 -c '
+          import os, json, glob
+
+          plugins = []
+          # Quét tất cả file manifest.json được sinh ra ở các thư mục build con
+          for manifest_path in glob.glob("**/build/manifest.json", recursive=True):
+              try:
+                  with open(manifest_path, "r", encoding="utf-8") as f:
+                      data = json.load(f)
+                      # Thêm URL tải file .cs3 tương ứng
+                      cs3_name = data.get("name", "") + ".cs3"
+                      data["url"] = f"https://raw.githubusercontent.com/{os.getenv(\"GITHUB_REPOSITORY\")}/builds/{cs3_name}"
+                      plugins.append(data)
+              except Exception as e:
+                  print(f"Error reading {manifest_path}: {e}")
+
+          # Ghi vào file plugins.json tổng
+          with open(f"{os.getenv(\"GITHUB_WORKSPACE\")}/builds/plugins.json", "w", encoding="utf-8") as f:
+              json.dump(plugins, f, indent=4, ensure_ascii=False)
+          '
 
       - name: Push builds
         run: |
