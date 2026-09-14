@@ -119,7 +119,8 @@ subprojects {
         }
 
         tasks.matching { it.name == "writeCacheEntry" }.configureEach {
-            val cs3File = layout.buildDirectory.file("${project.name}.cs3").get().asFile
+            //val cs3File = layout.buildDirectory.file("${project.name}.cs3").get().asFile
+            val cs3File = project.file("${project.layout.buildDirectory.get().asFile}/${project.name}.cs3")
             if (!cs3File.exists()) {
                 cs3File.parentFile.mkdirs()
                 cs3File.createNewFile()
