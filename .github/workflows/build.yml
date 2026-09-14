@@ -41,6 +41,7 @@ jobs:
           
           # Biên dịch toàn bộ các provider ra file .cs3
           ./gradlew makeAll --stacktrace
+          ./gradlew makePluginsJson -x writeCacheEntry --stacktrace
 
           # Sao chép kết quả ra thư mục builds
           find . -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/builds \;
