@@ -152,8 +152,8 @@ jobs:
           with open(os.path.join(dist_dir, "plugins.json"), "w", encoding="utf-8") as f:
             json.dump(plugin_list, f, indent=4, ensure_ascii=False)
 
-          # 2. Xuất plugins.json
-          # 2. Xuất plugins.json
+       
+          # 2. Xuất repo.json
           repo_manifest = {
             "name": "CaoCao Repo",
             "description": "Kho nguồn phim CaoCao",
