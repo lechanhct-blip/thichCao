@@ -35,13 +35,12 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Build Plugins and Generate Combined plugins.json
+      - name: Build Plugins and Generate CloudStream JSONs
         run: |
           chmod +x gradlew
           ./gradlew clean makeAll --no-build-cache --stacktrace
 
           mkdir -p $GITHUB_WORKSPACE/dist
-
           find . -path "./dist" -prune -o -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/dist \;
 
           python3 -c '
@@ -51,6 +50,7 @@ jobs:
           dist_dir = os.getenv("GITHUB_WORKSPACE") + "/dist"
           plugin_list = []
 
+          # 1. Thu gom thông tin từng plugin thành Mảng [...]
           for cs3_file in glob.glob(f"{dist_dir}/*.cs3"):
               try:
                   with zipfile.ZipFile(cs3_file, "r") as z:
@@ -58,16 +58,15 @@ jobs:
                           with z.open("manifest.json") as f:
                               data = json.load(f)
                               cs3_name = os.path.basename(cs3_file)
+                              file_size = os.path.getsize(cs3_file)
                               
-                              data["url"] = f"https://raw.githubusercontent.com/{repo}/builds/{cs3_name}"
+                              cs3_url = f"https://raw.githubusercontent.com/{repo}/builds/{cs3_name}"
                               
-                              # BẮT BUỘC: Đảm bảo luôn có các trường này ngay cả khi file manifest bị thiếu
-                              if "authors" not in data or not data["authors"]:
-                                  data["authors"] = ["lechanh"]
-                              if "tvTypes" not in data or not data["tvTypes"]:
-                                  data["tvTypes"] = ["NSFW"]
-                              if "description" not in data:
-                                  data["description"] = "No description"
+                              data["url"] = cs3_url
+                              data["pluginUrl"] = cs3_url
+                              data["fileSize"] = file_size
+                              data["repositoryUrl"] = f"https://github.com/{repo}"
+                              
                               if "status" not in data:
                                   data["status"] = 1
                               if "apiVersion" not in data:
@@ -77,15 +76,23 @@ jobs:
               except Exception as e:
                   print(f"Error processing {cs3_file}: {e}")
 
-          # Format Repository chuẩn không chứa vòng lặp pluginLists
-          repo_data = {
-              "name": "ThichCao Repository",
+          # Ghi danh sách chi tiết plugin ra file list.json
+          with open(f"{dist_dir}/list.json", "w", encoding="utf-8") as f:
+              json.dump(plugin_list, f, indent=4, ensure_ascii=False)
+
+          # 2. Tạo file Root Repo trỏ tới list.json
+          repo_manifest = {
+              "name": "CaoCao Repo",
+              "description": "Kho nguồn phim CaoCao",
               "manifestVersion": 1,
-              "plugins": plugin_list
+              "pluginLists": [
+                  f"https://raw.githubusercontent.com/{repo}/builds/list.json"
+              ]
           }
 
+          # Ghi file Root làm link chính dán vào CloudStream
           with open(f"{dist_dir}/plugins.json", "w", encoding="utf-8") as f:
-              json.dump(repo_data, f, indent=4, ensure_ascii=False)
+              json.dump(repo_manifest, f, indent=4, ensure_ascii=False)
           '
 
           mkdir -p $GITHUB_WORKSPACE/builds
