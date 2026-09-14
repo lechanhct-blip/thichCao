@@ -96,15 +96,25 @@ jobs:
                 if desc_match:
                   info["description"] = desc_match.group(1)
 
+                status_match = re.search(r"status\s*=\s*[\"'](.*?)[\"']", content)
+                if desc_match:
+                  info["status"] = status_match.group(1)
+
                 # Icon
                 icon_match = re.search(r"iconUrl\s*=\s*[\"'](.*?)[\"']", content)
                 if icon_match:
-                  info["iconUrl"] = icon_match.group(1)
-                
+                  info["iconUrl"] = icon_match.group(1)              
+              
                 # TV Types
                 tv_match = re.search(r"tvTypes\s*=\s*listOf\((.*?)\)", content)
                 if tv_match:
                   info["tvTypes"] = [t.strip().strip("\"'") for t in tv_match.group(1).split(",")]
+
+                # 1. TRÍCH XUẤT VERSION (Đọc version = 1, version = 2, ...)
+                ver_match = re.search(r"version\s*=\s*(\d+)", content)
+                if ver_match:
+                  info["version"] = int(ver_match.group(1))
+
 
             # Tự động quét pluginClassName từ file code .kt
             info["pluginClassName"] = find_plugin_class_name(provider_dir) or f"com.example.{provider_name}Plugin"
@@ -121,12 +131,12 @@ jobs:
             plugin_data = {
               "name": provider_name,
               "internalName": provider_name,
-              "pluginClassName": kts_info["pluginClassName"],
-              "version": 1,
+              #"pluginClassName": kts_info["pluginClassName"],
+              "version": kts_info.get("version", 1),
               "url": cs3_url,
-              "pluginUrl": cs3_url,
+              #"pluginUrl": cs3_url,
               "fileSize": os.path.getsize(cs3_file),
-              "status": 1,
+              "status": kts_info.get("status", 1),
               "apiVersion": 1,
               "authors": kts_info.get("authors", ["Unknown"]),
               "language": kts_info.get("language", "vi"),
