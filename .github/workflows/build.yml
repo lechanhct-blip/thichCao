@@ -44,7 +44,7 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
 
-      - name: Build Plugins
+      - name: Build All Plugins
         run: |
           chmod +x gradlew
           ./gradlew make --stacktrace          
