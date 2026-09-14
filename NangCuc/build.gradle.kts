@@ -17,7 +17,7 @@ cloudstream {
 
     tvTypes = listOf("NSFW")
     //dong nay de kiem tra thu muc RES
-    requiresResources = false
+    //requiresResources = false
     language = "vi"
 
     // Random CC logo I found
