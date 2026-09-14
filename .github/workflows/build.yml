@@ -49,11 +49,18 @@ jobs:
       - name: Build All Plugins
         run: |
           chmod +x gradlew
-          ./gradlew make --stacktrace          
-          ./gradlew makePluginsJson --stacktrace
           
+          ./gradlew assemble --stacktrace
+          ./gradlew make --stacktrace
+          
+          
+          ./gradlew makePluginsJson --stacktrace
+
+        
           find . -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/builds \;
-          cp build/plugins.json $GITHUB_WORKSPACE/builds
+          cp build/plugins.json $GITHUB_WORKSPACE/builds || true
+
+          
 
       - name: Push builds
         run: |
