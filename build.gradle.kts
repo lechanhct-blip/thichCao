@@ -120,12 +120,11 @@ tasks.register<Delete>("clean") {
 }
 
 // FIX: Gom task 'make' đúng chuẩn Kotlin DSL không bị đụng độ Project Evaluation Lifecycle
-val makeAll = tasks.register("makeAll")
-
-subprojects {
-    afterEvaluate {
-        makeAll.configure {
-            dependsOn(tasks.matching { it.name == "make" })
-        }
-    }
+// Gom task 'make' bằng cách trỏ đích danh theo đường dẫn task thay vì quây tìm theo name
+tasks.register("makeAll") {
+    group = "cloudstream"
+    description = "Biên dịch tất cả provider"
+    
+    // Đăng ký trực tiếp phụ thuộc vào task :make của tất cả subproject
+    dependsOn(subprojects.map { "${it.path}:make" })
 }
