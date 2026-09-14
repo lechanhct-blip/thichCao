@@ -112,20 +112,24 @@ subprojects {
 
     // FIX LỖI GRADLE 9+: Ép subproject tự sinh file placeholder trước khi Task Validation diễn ra
     afterEvaluate {
-        // 1. Tự động tạo thư mục res nếu chưa có cho mọi provider
+        // 1. Tự động tạo thư mục res nếu chưa có
         val resDir = file("src/main/res")
         if (!resDir.exists()) {
             resDir.mkdirs()
         }
 
+       // 2. Ép writeCacheEntry tự tạo file .cs3 placeholder NGAY TRƯỚC KHI TASK CHẠY
         tasks.matching { it.name == "writeCacheEntry" }.configureEach {
-            //val cs3File = layout.buildDirectory.file("${project.name}.cs3").get().asFile
-            val cs3File = project.file("${project.layout.buildDirectory.get().asFile}/${project.name}.cs3")
-            if (!cs3File.exists()) {
-                cs3File.parentFile.mkdirs()
-                cs3File.createNewFile()
-            }
+            // Khóa thứ tự phụ thuộc task
             dependsOn(tasks.matching { it.name == "make" || it.name == "build" })
+
+            doFirst {
+                val cs3File = layout.buildDirectory.file("${project.name}.cs3").get().asFile
+                if (!cs3File.exists()) {
+                    cs3File.parentFile.mkdirs()
+                    cs3File.createNewFile()
+                }
+            }
         }
     }
 }
