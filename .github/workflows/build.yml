@@ -159,7 +159,7 @@ jobs:
             "description": "Kho nguồn phim CaoCao",
             "manifestVersion": 1,
             "pluginLists": [
-              f"https://raw.githubusercontent.com/{repo}/builds/repo.json"
+              f"https://raw.githubusercontent.com/{repo}/builds/list.json"
             ]
           }
 
