@@ -92,7 +92,7 @@ private fun Element.toSearchResult(): SearchResponse? {
 
        // val luot_xem = this.selectFirst(".meta-viewed")?.text()
        // tenphim = $tenphim
-        return newAnimeSearchResponse(tenphim, duong_dan, TvType.Anime) {
+        return newMovieSearchResponse(tenphim, duong_dan, TvType.NSFW) {
             this.posterUrl = hinh
             //this.po  = get(luot_xem)
         }
