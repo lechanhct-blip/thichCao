@@ -30,7 +30,7 @@ class JAVHDZ : MainAPI() { // All providers must be an instance of MainAPI
  override var mainUrl = "https://javhdz.ac"
 
     override val mainPage = mainPageOf(
-        "1" to "ĐỀ XUẤT",
+        "/video/" to "ĐỀ XUẤT",
         "/video/" to "video",
         "/trending/" to "trending",
         "/category/censored-2/" to "censored",
@@ -39,11 +39,10 @@ class JAVHDZ : MainAPI() { // All providers must be an instance of MainAPI
     )
 
  override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
-   var document: Document? = null
-        if (request.data!="1") {
-            document = app.get("$mainUrl${request.data}page/$page").document
-        }else{
-            document = app.get("$mainUrl/video/page/$page").document
+   var document = app.get("$mainUrl${request.data}page/$page").document     
+        if (request.name=="ĐỀ XUẤT") {
+            
+           /// document = app.get("$mainUrl/video/page/$page").document
             //lay tông trang JAVHD
             val docNavi = document.selectFirst("div.navigation")
             val number = docNavi?.select("a.page-numbers")?.get(4)?.text()
@@ -61,13 +60,13 @@ class JAVHDZ : MainAPI() { // All providers must be an instance of MainAPI
             val nPage = (3..(totalPage-3).coerceAtLeast(3)).random()
 
 
-            document = app.get("$mainUrl/video/page/$nPage").document
+            document = app.get("$mainUrl${request.data}page/$nPage").document
         }
         
         //val document = app.get("$mainUrl${request.data}page/$page").document
 //        val responseList  = document.select(".thumbnail").mapNotNull { it.toSearchResult() }
         val responseList  = document.select("a.movie-item").mapNotNull { it.toSearchResult() }
-        return newHomePageResponse(HomePageList(request.name, responseList, isHorizontalImages = true),hasNext = true)
+        return newHomePageResponse(HomePageList(request.name, responseList, isHorizontalImages = false),hasNext = true)
     }
 
  override fun getVideoInterceptor(extractorLink: ExtractorLink): okhttp3.Interceptor {
