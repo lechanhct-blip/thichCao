@@ -102,7 +102,7 @@ override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageR
         val anchor = this.selectFirst("div.thumbnail.group div.relative")?: return null
         val code = anchor.selectFirst("a")?.attr("alt")
         val duong_dan = fixUrlNull(anchor.selectFirst("a")?.attr("href"))?:""
-        val tenphim = anchor.selectFirst("img")?.attr("alt")?:""
+        val tenphim = code.uppercase() + " " + anchor.selectFirst("img")?.attr("alt")?:""
         val hinh = fixUrlNull(anchor.selectFirst("img")?.attr("data-src"))
         return newMovieSearchResponse(tenphim, duong_dan, TvType.NSFW) {
             this.posterUrl = hinh
