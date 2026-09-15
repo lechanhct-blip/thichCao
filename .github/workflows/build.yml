@@ -36,16 +36,7 @@ jobs:
         uses: android-actions/setup-android@v3
 
 
-        with:
-          # Chỉ cài đặt cmdline-tools mới và build-tools cần thiết, BỎ gói 'tools' cũ
-          cmdline-tools-version: '11.0'
-          accept-android-sdk-licenses: true
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
+        
 
 
 
