@@ -65,7 +65,7 @@ override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageR
             app.get(url, headers = headers)
         }
 //
-        val document = response.document
+        var document = response.document
 
 
 
