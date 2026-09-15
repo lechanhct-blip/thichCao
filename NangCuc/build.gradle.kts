@@ -6,7 +6,7 @@ cloudstream {
 
     description = "nang cuc hang fake"
     language    = "vi"
-    authors = listOf("HindiProviders")
+    authors = listOf("Nang Cục FAKE")
 
     /**
     * Status int as the following:
