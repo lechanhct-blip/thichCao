@@ -65,12 +65,12 @@ override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageR
             app.get(url, headers = headers)
         }
 //
-        val doc = response.document
+        val document = response.document
 
 
 
 
-        var document = doc
+        //var document = doc
         if (request.name=="ĐỀ XUẤT") {
 
 
@@ -93,7 +93,7 @@ override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageR
            document = app.get(url).document
         }
 
-        val responseList  = doc.select("div.thumbnail.group").mapNotNull { it.toSearchResult() }
+        val responseList  = document.select("div.thumbnail.group").mapNotNull { it.toSearchResult() }
         return newHomePageResponse(HomePageList(request.name, responseList, isHorizontalImages = true),hasNext = true)
     }
 
