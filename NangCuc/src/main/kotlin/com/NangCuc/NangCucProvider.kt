@@ -36,8 +36,7 @@ class NangCuc : MainAPI() {
      "/genres/au-my/" to "Âu - Mỹ",
      "/genres/trung-quoc/" to "Gái Trung Quốc",
      "/genres/khong-che/" to "Không Che",
-     "/genres/viet-sub/" to "Sub Việt",
-     "/dien-vien/" to "Diễn Viên"
+     "/genres/viet-sub/" to "Sub Việt"
 
      )
 
