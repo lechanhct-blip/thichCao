@@ -89,7 +89,7 @@ override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageR
             val nPage = (5..(totalPage-5).coerceAtLeast(5)).random()
 //
 //
-            url = "$mainUrl${request.data}?page=$page"
+            url = "$mainUrl${request.data}?page=$nPage"
            document = app.get(url).document
         }
 
