@@ -84,14 +84,14 @@ private fun Element.toSearchResult(): SearchResponse? {
         val anchor = this.selectFirst("a.movie-item")?: return null
 
         //lấy tên
-        var tenphim = anchor.attr("title").ifEmpty {
+        val tenphim = anchor.attr("title").ifEmpty {
             this.selectFirst(".movie-title-1")?.text()
         } ?: return null
         val duong_dan = fixUrlNull(anchor.attr("href"))?:""
         val hinh = fixUrlNull(this.selectFirst("img.public-film-item-thumb")?.attr("src"))
 
        // val luot_xem = this.selectFirst(".meta-viewed")?.text()
-        tenphim = "$tenphim
+       // tenphim = $tenphim
         return newAnimeSearchResponse(tenphim, duong_dan, TvType.Anime) {
             this.posterUrl = hinh
             //this.po  = get(luot_xem)
