@@ -66,7 +66,7 @@ class JAVHDZ : MainAPI() { // All providers must be an instance of MainAPI
         //val document = app.get("$mainUrl${request.data}page/$page").document
 //        val responseList  = document.select(".thumbnail").mapNotNull { it.toSearchResult() }
         val responseList  = document.select("a.movie-item").mapNotNull { it.toSearchResult() }
-        return newHomePageResponse(HomePageList(request.name, responseList, isHorizontalImages = false),hasNext = true)
+        return newHomePageResponse(HomePageList(request.name, responseList, isHorizontalImages = true),hasNext = true)
     }
 
  override fun getVideoInterceptor(extractorLink: ExtractorLink): okhttp3.Interceptor {
