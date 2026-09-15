@@ -35,7 +35,7 @@ override var mainUrl = "https://missav.ws"
     override val mainPage = mainPageOf(
         "/dm539/vi/new/" to "ĐỀ XUẤT",
         "/dm635/vi/release/" to "MỚI CẬP NHẬT",
-        "/dm106/vi/genres/Plot/" to "KỊCH BẢN",
+        "/dm106/vi/genres/Plot/" to "CỐT TRUYỆN",
         "/dm55/vi/genres/4K/" to "4K",
         "/dm772/vi/genres/Ntr/" to "LÉN LÚC"
     )
@@ -100,9 +100,9 @@ override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageR
     private fun Element.toSearchResult(): SearchResponse? {
         //tìm thẻ liên kết
         val anchor = this.selectFirst("div.thumbnail.group div.relative")?: return null
-        val code = anchor.selectFirst("a")?.attr("alt")?:"".uppercase()
+        val code = anchor.selectFirst("a")?.attr("alt")?:""
         val duong_dan = fixUrlNull(anchor.selectFirst("a")?.attr("href"))?:""
-        val tenphim = code + " " + anchor.selectFirst("img")?.attr("alt")
+        val tenphim = code.uppercase() + " " + anchor.selectFirst("img")?.attr("alt")
         val hinh = fixUrlNull(anchor.selectFirst("img")?.attr("data-src"))
         return newMovieSearchResponse(tenphim, duong_dan, TvType.NSFW) {
             this.posterUrl = hinh
