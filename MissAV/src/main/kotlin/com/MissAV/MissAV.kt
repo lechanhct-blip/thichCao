@@ -100,7 +100,7 @@ override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageR
     private fun Element.toSearchResult(): SearchResponse? {
         //tìm thẻ liên kết
         val anchor = this.selectFirst("div.thumbnail.group div.relative")?: return null
-        val code = anchor.selectFirst("a")?.attr("alt")
+        val code = anchor.selectFirst("a")?.attr("alt")?:""
         val duong_dan = fixUrlNull(anchor.selectFirst("a")?.attr("href"))?:""
         val tenphim = code.uppercase() + " " + anchor.selectFirst("img")?.attr("alt")?:""
         val hinh = fixUrlNull(anchor.selectFirst("img")?.attr("data-src"))
