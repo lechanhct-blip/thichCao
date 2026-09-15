@@ -29,7 +29,7 @@ class NangCuc : MainAPI() {
     override val hasMainPage = true
     override var mainUrl = "https://daebaknews.co"
     override val mainPage = mainPageOf(
-     "1" to "ĐỀ XUẤT",
+     "/" to "ĐỀ XUẤT",
      "/" to "Trang chủ",
      "/regions/nhat-ban/" to "Nhật Bản",
      "/regions/trung-quoc/" to "Trung Quốc",
@@ -54,21 +54,19 @@ class NangCuc : MainAPI() {
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
         //val document = app.get("$mainUrl${request.data}page/$page").document
 
-        var document: Document? = null
-        if (request.data!="1") {
-            document = app.get("$mainUrl${request.data}page/$page").document
-        }else{
-            document = app.get("$mainUrl/page/$page").document
+        var document = app.get("$mainUrl${request.data}page/$page").document
+        if (request.name=="ĐỀ XUẤT") {
+            //document = app.get("$mainUrl/page/$page").document
 
             val docNavi = document.selectFirst("ul.pagination")
             val number = docNavi?.select("li.page-item a")?.get(3)?.text()
-            val totalPage = number?.toIntOrNull()?:3 // 70
+            val totalPage = number?.toIntOrNull()?:5 // 70
             //val nn = pageNumber
             // val numberrandom = (1..100 ).random()
 
             //val pageNumber = number?.toIntOrNull() ?: 100
-            val nPage = (3..(totalPage-3).coerceAtLeast(3)).random()
-            document = app.get("$mainUrl/page/$nPage").document
+            val nPage = (5..(totalPage-5).coerceAtLeast(5)).random()
+            document = app.get("$mainUrl${request.data}page/$nPage").document
         }
      
 //        val responseList  = document.select(".thumbnail").mapNotNull { it.toSearchResult() }
