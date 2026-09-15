@@ -90,9 +90,9 @@ private fun Element.toSearchResult(): SearchResponse? {
         val duong_dan = fixUrlNull(anchor.attr("href"))?:""
         val hinh = fixUrlNull(this.selectFirst("img.public-film-item-thumb")?.attr("src"))
 
-        val luot_xem = this.selectFirst(".meta-viewed")?.text()
-        tenphim = "$tenphim | $luot_xem lượt xem"
-        return newAnimeSearchResponse(tenphim, duong_dan, TvType.NSFW) {
+       // val luot_xem = this.selectFirst(".meta-viewed")?.text()
+        tenphim = "$tenphim
+        return newAnimeSearchResponse(tenphim, duong_dan, TvType.Anime) {
             this.posterUrl = hinh
             //this.po  = get(luot_xem)
         }
