@@ -36,7 +36,7 @@ override var mainUrl = "https://missav.ws"
         "/dm539/vi/new/" to "ĐỀ XUẤT328",
         "/dm635/vi/release/" to "MỚI CẬP NHẬT",
         "/dm106/vi/genres/Plot/" to "CỐT TRUYỆN",
-        "/dm55/vi/genres/4K/" to "4K",
+        //"/dm55/vi/genres/4K/" to "4K",
         "/dm772/vi/genres/Ntr/" to "LÉN LÚC"
     )
 
@@ -293,7 +293,7 @@ val headers = mapOf(
         val duong_dan = fixUrlNull(anchor.selectFirst("a")?.attr("href"))?:""
         val tenphim = code.uppercase() + " " + anchor.selectFirst("img")?.attr("alt")
         val hinh = fixUrlNull(anchor.selectFirst("img")?.attr("data-src"))
-        return newMovieSearchResponse(tenphim, duong_dan, TvType.NSFW) {
+        return newMovieSearchResponse(tenphim, duong_dan, TvType.Movie) {
             this.posterUrl = hinh
         }
     }
