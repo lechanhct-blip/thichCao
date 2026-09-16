@@ -127,7 +127,7 @@ val headers = mapOf(
     val document = app.get(url, headers = headers).document
 
 // 2. Tìm thẻ script chứa đoạn eval unpack m3u8
-    val scripts = document.select("script").map { it.url }
+    val scripts = document.select("script").map { it.data() }
     val targetScript = scripts.find { it.contains("eval(function(p,a,c,k,e,d)") && it.contains("surrit") }
 
 //if (targetScript != null) {
