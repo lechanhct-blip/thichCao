@@ -58,7 +58,9 @@ jobs:
       - name: Build Plugins and Generate CloudStream JSONs
         run: |
           chmod +x gradlew
-          ./gradlew clean makeAll --no-build-cache --stacktrace
+          #./gradlew clean makeAll --no-build-cache --stacktrace
+          run: ./gradlew :providers:${{ github.event.inputs.provider_name }}:make
+
 
           mkdir -p $GITHUB_WORKSPACE/dist
           find . -path "./dist" -prune -o -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/dist \;
