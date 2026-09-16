@@ -115,18 +115,18 @@ override suspend fun load(url: String): LoadResponse? {
         //trỏ vào đối tượng IMG
        // val imgThumb = article.selectFirst("button.film-preview-thumb img")
         val hinh =fixUrlNull(article.selectFirst("button.film-preview-thumb img")?.attr("src"))
-        val ten_phim = article.selectFirst("h1.video-title")?.text()?: return null
+        val ten_phim = article.selectFirst("h1.video-title")?.text()?:""
 
 
         val thong_tin = article.selectFirst(".fancybox p")?.text()
         //thong_tin?.select("img")?.remove()
-val aa = thong_tin?.length
+//val aa = thong_tin?.length
 val embedUrl = article.selectFirst(".list_link li")?.attr("data-link")
 
 
-val luot_xem =article.selectFirst(".block-view span")?.text()
+//val luot_xem =article.selectFirst(".block-view span")?.text()
 
-    return newMovieLoadResponse(ten_phim+" | "+luot_xem, url, TvType.NSFW, embedUrl) {
+    return newMovieLoadResponse(ten_phim, url, TvType.NSFW, embedUrl) {
         this.posterUrl = hinh
         this.plot = thong_tin
     }
