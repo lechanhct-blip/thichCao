@@ -21,7 +21,7 @@ import com.lagradost.cloudstream3.network.WebViewResolver
 
 class MissAV : MainAPI() { // All providers must be an instance of MainAPI
 
-    override var name = "Kho Phim 3 Miss DOC"
+    override var name = "Kho Phim 3 MissAV"
     override val supportedTypes = setOf(TvType.Movie, TvType.NSFW)
     override val hasDownloadSupport   = true
     override val hasChromecastSupport = true
