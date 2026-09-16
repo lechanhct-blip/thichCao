@@ -152,6 +152,28 @@ val headers = mapOf(
 
 override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallback: (SubtitleFile) -> Unit, callback: (ExtractorLink) -> Unit): Boolean {        
 
+var foundUrl = ""
+
+    // Cho WebView tải trang ngầm và bắt URL m3u8 từ Network Requests
+    val webView = app.get(
+        data,
+        headers = mapOf(
+            "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Referer" to data
+        )
+    )
+
+
+    // Lọc tìm URL m3u8 trong response hoặc bắt request bằng WebViewResolver nếu Cloudstream hỗ trợ
+    // Hoặc tìm link playlist m3u8 bằng Regex mở rộng (mã hóa tương đối)
+    val m3u8Regex = Regex("""https?://[^\s"'<]+?\.(?:m3u8|mp4)[^\s"'<]*""")
+    val match = m3u8Regex.find(webView.text)?.value
+
+    if (!match.isNullOrEmpty()) {
+        foundUrl = match
+    }
+    
+/*
 val headers = mapOf(
         "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64)...",
         "Referer" to data
@@ -165,10 +187,11 @@ val headers = mapOf(
     // Cần kiểm tra regex khớp với cấu trúc script hiện tại của MissAV
     val m3u8Url = Regex("""https://[^\s"'<]+?\.m3u8""").find(response)?.value?:""
 
-
+*/
     
     // 4. Kiểm tra và trả về link cho trình phát
-    if (m3u8Url.startsWith("http")) {
+    //if (m3u8Url.startsWith("http")) {
+    if (foundUrl.isNotEmpty()) {
         val extractor = newExtractorLink(
             source = this.name,
             name = "Server VIP",
@@ -177,6 +200,11 @@ val headers = mapOf(
         callback.invoke(extractor)
         return true
     }
+
+
+
+
+    
     return false
   }
 
