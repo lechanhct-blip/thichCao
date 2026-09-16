@@ -133,7 +133,7 @@ val headers = mapOf(
 //if (targetScript != null) {
         // 3. Dùng Regex lọc chuỗi UUID (VD: f66ccc35-3ac7-4da8-afa4-4cc4f9eab3a7)
         val uuidRegex = Regex("""([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})""")
-        val matchUuid = uuidRegex.find(targetScript)?.value
+        val matchUuid = uuidRegex.find(targetScript)?.value?:""
         val m3u8Url = "https://surrit.com/$matchUuid/playlist.m3u8"
 //}
 
@@ -342,12 +342,12 @@ suspend fun getExternalSubtitile(code: String, subtitleCallback: (SubtitleFile) 
                 
                 
                 
-                val query = "$subtitleCatUrl/index.php?search=$javCode"
+                val query = "$subtitleCatUrl/index.php?search=$code"
                 val subDoc = app.get(query, timeout = 15).document
                 val subList = subDoc.select("td a")
                 for(item in subList)
                 {
-                    if(item.text().contains(javCode))
+                    if(item.text().contains(code))
                     {
                         val fullUrl = "$subtitleCatUrl/${item.attr("href")}"
                         val pDoc = app.get(fullUrl, timeout = 10).document
