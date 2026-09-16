@@ -6,14 +6,11 @@ concurrency:
 
 on:
   workflow_dispatch:
-
     inputs:
       provider_name:
         description: 'Nhập chính xác tên thư mục Provider cần build (Ví dụ: ProviderAnimes)'
         required: true
         default: 'ProviderAnimes'
-
-
   
 
 permissions:
