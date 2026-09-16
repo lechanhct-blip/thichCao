@@ -152,6 +152,54 @@ val headers = mapOf(
 
 override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallback: (SubtitleFile) -> Unit, callback: (ExtractorLink) -> Unit): Boolean {        
 
+val headers = mapOf(
+        "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Referer" to data
+    )
+
+
+// 1. Tải HTML trang web
+    val responseText = app.get(data, headers = headers).text
+    val document = Jsoup.parse(responseText)
+
+    // 2. Tìm thẻ script chứa đoạn eval unpack m3u8
+    val scripts = document.select("script").map { it.data() }
+    val targetScript = scripts.find { it.contains("eval(function(p,a,c,k,e,d)") && it.contains("surrit") }
+
+    if (targetScript != null) {
+        // 3. Dùng Regex lọc chuỗi UUID (VD: f66ccc35-3ac7-4da8-afa4-4cc4f9eab3a7)
+        val uuidRegex = Regex("""([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})""")
+        val matchUuid = uuidRegex.find(targetScript)?.value
+
+        if (!matchUuid.isNullOrEmpty()) {
+            // 4. Tái tạo URL m3u8 chính thức
+            val m3u8Url = "https://surrit.com/$matchUuid/playlist.m3u8"
+
+
+
+            val extractor = newExtractorLink(
+                source = this.name,
+                name = "Server VIP",
+                url = m3u8Url
+            )
+            callback.invoke(extractor)
+            return true
+            
+
+            // callback.invoke(
+            //     ExtractorLink(
+            //         source = this.name,
+            //         name = "Surrit HLS",
+            //         url = m3u8Url,
+            //         referer = "https://surrit.com/",
+            //         quality = Qualities.Unknown.value,
+            //         isM3u8 = true
+            //     )
+            // )
+            return true
+        }
+    }
+    /*
 var m3u8Url = ""
 
     // Cho WebView tải trang ngầm và bắt URL m3u8 từ Network Requests
@@ -172,6 +220,8 @@ var m3u8Url = ""
     if (!match.isNullOrEmpty()) {
         m3u8Url = match
     }
+
+    */
     
 /*
 val headers = mapOf(
@@ -191,15 +241,15 @@ val headers = mapOf(
     
     // 4. Kiểm tra và trả về link cho trình phát
     //if (m3u8Url.startsWith("http")) {
-    if (m3u8Url.isNotEmpty()) {
-        val extractor = newExtractorLink(
-            source = this.name,
-            name = "Server VIP",
-            url = m3u8Url
-        )
-        callback.invoke(extractor)
-        return true
-    }
+    // if (m3u8Url.isNotEmpty()) {
+    //     val extractor = newExtractorLink(
+    //         source = this.name,
+    //         name = "Server VIP",
+    //         url = m3u8Url
+    //     )
+    //     callback.invoke(extractor)
+    //     return true
+    // }
 
 
 
