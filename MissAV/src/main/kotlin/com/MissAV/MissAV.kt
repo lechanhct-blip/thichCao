@@ -214,7 +214,7 @@ override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallbac
                  val extractor = newExtractorLink(
                     source = this.name,
                     name = "Server VIP",
-                    url = m3u8Url
+                    url = data
                 )
                 callback.invoke(extractor)
 
@@ -337,12 +337,11 @@ val headers = mapOf(
 
 
 
- suspend fun getExternalSubtitile(doc: Document, subtitleCallback: (SubtitleFile) -> Unit) {
-        try {
-            val title = doc.selectFirst("meta[property=og:title]")?.attr("content")?.trim().toString()
-            val javCode = "([a-zA-Z]+-\\d+)".toRegex().find(title)?.groups?.get(1)?.value
-            if(!javCode.isNullOrEmpty())
-            {
+suspend fun getExternalSubtitile(code: String, subtitleCallback: (SubtitleFile) -> Unit) {
+        
+                
+                
+                
                 val query = "$subtitleCatUrl/index.php?search=$javCode"
                 val subDoc = app.get(query, timeout = 15).document
                 val subList = subDoc.select("td a")
@@ -374,8 +373,10 @@ val headers = mapOf(
                     }
                 }
 
-            }
-        } catch (_: Exception) { }
+                
+                
+                
+            
     }
 
 
