@@ -125,16 +125,28 @@ val headers = mapOf(
 
     // 1. Tải HTML trang chi tiết
     val document = app.get(url, headers = headers).document
+
+// 2. Tìm thẻ script chứa đoạn eval unpack m3u8
+    val scripts = document.select("script").map { it.url() }
+    val targetScript = scripts.find { it.contains("eval(function(p,a,c,k,e,d)") && it.contains("surrit") }
+
+//if (targetScript != null) {
+        // 3. Dùng Regex lọc chuỗi UUID (VD: f66ccc35-3ac7-4da8-afa4-4cc4f9eab3a7)
+        val uuidRegex = Regex("""([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})""")
+        val matchUuid = uuidRegex.find(targetScript)?.value
+        val m3u8Url = "https://surrit.com/$matchUuid/playlist.m3u8"
+//}
+
     
         //val document = app.get(url).document
         //val article = document.selectFirst(".watch-block-area")?: return null
 
         val hinh =fixUrlNull(document.selectFirst("meta[property=og:image]")?.attr("content"))
         //val title = document.selectFirst("meta[property=og:title]")?.attr("content")?.trim() ?: "Unknown"
+        val ten_phim = document.selectFirst("Title")?.text() ?:""
+        var thong_tin = document.selectFirst("meta[property=og:title]")?.attr("content")?.trim()?:""
 
-        val ten_phim = document.selectFirst("meta[property=og:title]")?.attr("content")?.trim()?:""
-
-        var thong_tin = ten_phim
+        //var thong_tin = ten_phim
         val elements = document.select(".space-y-2 div.text-secondary")
 
         elements.forEach { el ->
@@ -151,7 +163,7 @@ val headers = mapOf(
 
 
     
-    return newMovieLoadResponse(ten_phim, url, TvType.Movie, url) {
+    return newMovieLoadResponse(ten_phim, url, TvType.Movie, m3u8Url) {
         this.posterUrl = hinh
         this.plot = thong_tin
     }
@@ -184,24 +196,45 @@ val headers = mapOf(
     val scripts = document.select("script").map { it.data() }
     val targetScript = scripts.find { it.contains("eval(function(p,a,c,k,e,d)") && it.contains("surrit") }
 
-    if (targetScript != null) {
+    //if (targetScript != null) {
         // 3. Dùng Regex lọc chuỗi UUID (VD: f66ccc35-3ac7-4da8-afa4-4cc4f9eab3a7)
-        val uuidRegex = Regex("""([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})""")
-        val matchUuid = uuidRegex.find(targetScript)?.value
+    val uuidRegex = Regex("""([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})""")
+    val matchUuid = uuidRegex.find(targetScript)?.value
 
-        if (!matchUuid.isNullOrEmpty()) {
+      //  if (!matchUuid.isNullOrEmpty()) {
             // 4. Tái tạo URL m3u8 chính thức
-            val m3u8Url = "https://surrit.com/$matchUuid/playlist.m3u8"
+    val m3u8Url = "https://surrit.com/$matchUuid/playlist.m3u8"
 
 
+                     
 
-            val extractor = newExtractorLink(
-                source = this.name,
-                name = "Server VIP",
-                url = m3u8Url
-            )
-            callback.invoke(extractor)
-            return true
+
+     runAllAsync(
+            {
+                 val extractor = newExtractorLink(
+                    source = this.name,
+                    name = "Server VIP",
+                    url = m3u8Url
+                )
+                callback.invoke(extractor)
+
+            },
+            {
+                getExternalSubtitile(doc, subtitleCallback)
+            }
+        )
+
+            
+
+            
+
+            // val extractor = newExtractorLink(
+            //     source = this.name,
+            //     name = "Server VIP",
+            //     url = m3u8Url
+            // )
+            // callback.invoke(extractor)
+            //return true
             
 
             // callback.invoke(
@@ -214,9 +247,9 @@ val headers = mapOf(
             //         isM3u8 = true
             //     )
             // )
-            return true
-        }
-    }
+         //   return true
+       // }
+   // }
     /*
 var m3u8Url = ""
 
@@ -273,7 +306,7 @@ val headers = mapOf(
 
 
     
-    return false
+    return true
   }
 
 
@@ -300,7 +333,46 @@ val headers = mapOf(
 
 
 
+ suspend fun getExternalSubtitile(doc: Document, subtitleCallback: (SubtitleFile) -> Unit) {
+        try {
+            val title = doc.selectFirst("meta[property=og:title]")?.attr("content")?.trim().toString()
+            val javCode = "([a-zA-Z]+-\\d+)".toRegex().find(title)?.groups?.get(1)?.value
+            if(!javCode.isNullOrEmpty())
+            {
+                val query = "$subtitleCatUrl/index.php?search=$javCode"
+                val subDoc = app.get(query, timeout = 15).document
+                val subList = subDoc.select("td a")
+                for(item in subList)
+                {
+                    if(item.text().contains(javCode))
+                    {
+                        val fullUrl = "$subtitleCatUrl/${item.attr("href")}"
+                        val pDoc = app.get(fullUrl, timeout = 10).document
+                        val sList = pDoc.select(".col-md-6.col-lg-4")
+                        for(item in sList)
+                        {
+                            try {
+                                val language = item.select(".sub-single span:nth-child(2)").text()
+                                val text = item.select(".sub-single span:nth-child(3) a")
+                                if(text.isNotEmpty() && text[0].text() == "Download")
+                                {
+                                    val url = "$subtitleCatUrl${text[0].attr("href")}"
+                                    subtitleCallback.invoke(
+                                        newSubtitleFile(
+                                            language.replace("\uD83D\uDC4D \uD83D\uDC4E",""),  // Use label for the name
+                                            url     // Use extracted URL
+                                        )
+                                    )
+                                }
+                            } catch (_: Exception) { }
+                        }
 
+                    }
+                }
+
+            }
+        } catch (_: Exception) { }
+    }
 
 
 
