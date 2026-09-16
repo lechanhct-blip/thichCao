@@ -191,7 +191,7 @@ val headers = mapOf(
     
     // 4. Kiểm tra và trả về link cho trình phát
     //if (m3u8Url.startsWith("http")) {
-    if (foundUrl.isNotEmpty()) {
+    if (m3u8Url.isNotEmpty()) {
         val extractor = newExtractorLink(
             source = this.name,
             name = "Server VIP",
