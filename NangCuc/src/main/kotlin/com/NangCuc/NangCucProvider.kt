@@ -20,7 +20,7 @@ import com.lagradost.cloudstream3.utils.loadExtractor
 
 class NangCuc : MainAPI() {
  override var name = "Kho Phim 2"
-    override val supportedTypes = setOf(TvType.NSFW)
+    override val supportedTypes = setOf(TvType.Movie,TvType.NSFW)
     override val hasDownloadSupport   = true
     override val hasChromecastSupport = true
     override var lang = "vi"
