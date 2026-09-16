@@ -56,7 +56,8 @@ jobs:
         run: |
           chmod +x gradlew
           #./gradlew clean makeAll --no-build-cache --stacktrace
-          ./gradlew :providers:${{ github.event.inputs.provider_name }}:make
+          #./gradlew :providers:${{ github.event.inputs.provider_name }}:make #la tu goc den thu muc provider do project hiên tai ko co thu muc provider nen bo
+          ./gradlew :${{ github.event.inputs.provider_name }}:make
 
 
           mkdir -p $GITHUB_WORKSPACE/dist
