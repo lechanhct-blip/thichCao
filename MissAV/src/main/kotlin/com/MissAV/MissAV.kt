@@ -144,7 +144,7 @@ val headers = mapOf(
             if (txt.contains("Ngày phát hành:") or txt.contains("Nữ diễn viên:")) {
 
 
-                thong_tin += "\n - "+ txt +" "+ e?.nextElementSiblings()?.text()
+                thong_tin += "\n ► "+ txt +" "+ e?.nextElementSiblings()?.text()
             }
 
         }
