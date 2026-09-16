@@ -116,9 +116,26 @@ val headers = mapOf(
 
         val ten_phim = document.selectFirst("meta[property=og:title]")?.attr("content")?.trim()?:""
 
+        var thong_tin = ten_phim
+        val elements = document.select(".space-y-2 div.text-secondary")
+
+        elements.forEach { el ->
+            val e = el.selectFirst(".text-secondary span")
+            val txt = e?.text() ?:""
+
+            if (txt.contains("Ngày phát hành:") or txt.contains("Nữ diễn viên:")) {
+
+
+                thong_tin += "\n"+ txt +" "+ e?.nextElementSiblings()?.text()
+            }
+
+        }
+
+
+    
     return newMovieLoadResponse(ten_phim, url, TvType.NSFW, url) {
         this.posterUrl = hinh
-        this.plot = ten_phim
+        this.plot = thong_tin
     }
 
 // 4. Tạo tập phim mặc định để kích hoạt trình phát (Dành cho phim lẻ/nội dung đơn lẻ)
