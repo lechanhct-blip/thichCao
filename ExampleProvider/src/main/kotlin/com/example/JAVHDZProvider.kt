@@ -19,7 +19,7 @@ import com.lagradost.cloudstream3.utils.newExtractorLink
 import com.lagradost.cloudstream3.utils.loadExtractor
 
 class JAVHDZ : MainAPI() { // All providers must be an instance of MainAPI
-  override var name = "JAVHDZ_nt"
+  override var name = "kho Phim 1"
     override val supportedTypes = setOf(TvType.NSFW)
     override val hasDownloadSupport   = true
     override val hasChromecastSupport = true
@@ -159,6 +159,7 @@ private fun Element.toSearchResult(): SearchResponse? {
         //trỏ vào đối tượng IMG
         val imgThumb = article.select("img.thumb")
         val hinh =fixUrlNull(imgThumb.attr("src"))
+        
         val ten_phim = imgThumb.attr("alt").trim()
 
 
@@ -166,6 +167,19 @@ private fun Element.toSearchResult(): SearchResponse? {
       //  val thong_tin = article.selectFirst("p")?.ownText()
         thong_tin?.select("img")?.remove()
         val tt = thong_tin?.text()
+
+
+
+
+         // var code = "([a-zA-Z]+-\\d+)".toRegex().find(ten_phim)?.groups?.get(1)?.value//extractJavCode(ten_phim)
+         //  if ((code.isNullOrBlank()) and (tt !="") ) {
+         //    if  (!hasVietSub(tt)){
+         //        code = = "([a-zA-Z]+-\\d+)".toRegex().find(tt)?.groups?.get(1)?.value
+         //    }
+         //  }
+
+
+        
 
         //lấy link video
         val scriptTag = document.select("script").find{it.html().contains("jwplayer(\"javhd\").setup")}
