@@ -95,7 +95,45 @@ override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageR
 
         val responseList  = document.select("div.thumbnail.group").mapNotNull { it.toSearchResult() }
         return newHomePageResponse(HomePageList(request.name, responseList, isHorizontalImages = true),hasNext = true)
+}
+
+
+override suspend fun load(url: String): LoadResponse? {
+
+val headers = mapOf(
+        "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64)...",
+        "Referer" to url
+    )
+
+    // 1. Tải HTML trang chi tiết
+    val document = app.get(url, headers = headers).document
+    
+        //val document = app.get(url).document
+        //val article = document.selectFirst(".watch-block-area")?: return null
+
+        val hinh =fixUrlNull(document.selectFirst("meta[property=og:image]")?.attr("content"))
+        //val title = document.selectFirst("meta[property=og:title]")?.attr("content")?.trim() ?: "Unknown"
+
+        val ten_phim = document.selectFirst("meta[property=og:title]")?.attr("content")?.trim()?:""
+
+    return newMovieLoadResponse(ten_phim, url, TvType.NSFW, url) {
+        this.posterUrl = hinh
+        this.plot = ten_phim
     }
+
+// 4. Tạo tập phim mặc định để kích hoạt trình phát (Dành cho phim lẻ/nội dung đơn lẻ)
+//        val episodes = listOf(
+//            newEpisode(url) {
+//                this.name = "Phát Video"
+//                this.episode = 1
+//                this.season = 1
+//            }
+//        )
+
+    }
+
+
+
 
     private fun Element.toSearchResult(): SearchResponse? {
         //tìm thẻ liên kết
