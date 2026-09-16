@@ -163,8 +163,8 @@ jobs:
               "language": kts_info.get("language", "vi"),
               "description": kts_info.get("description", ""),
               "iconUrl": kts_info.get("iconUrl", ""),
-              "tvTypes": kts_info.get("tvTypes", ["Movie"]),
-              "repositoryUrl": f"https://github.com/{repo}"
+              "tvTypes": kts_info.get("tvTypes", ["Movie"])
+              #"repositoryUrl": f"https://github.com/{repo}" #dong nay de chen link quan cao vao khi nguoi dung bam vao icon của plugin
             }
     
             plugin_list.append(plugin_data)
