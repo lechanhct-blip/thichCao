@@ -133,7 +133,7 @@ val headers = mapOf(
     if (targetScript != null) {
         // 3. Dùng Regex lọc chuỗi UUID (VD: f66ccc35-3ac7-4da8-afa4-4cc4f9eab3a7)
         val uuidRegex = Regex("""([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})""")
-        val matchUuid = uuidRegex.find(targetScript)?.value
+        val matchUuid = uuidRegex.find(targetScript)?.value?:""
         if (matchUuid.isNotEmpty()) {
             m3u8Url = "https://surrit.com/$matchUuid/playlist.m3u8"
         }
