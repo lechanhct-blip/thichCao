@@ -151,7 +151,7 @@ val headers = mapOf(
 
 
     
-    return newMovieLoadResponse(ten_phim, url, TvType.NSFW, url) {
+    return newMovieLoadResponse(ten_phim, url, TvType.Movie, url) {
         this.posterUrl = hinh
         this.plot = thong_tin
     }
