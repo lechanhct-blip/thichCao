@@ -163,7 +163,7 @@ val headers = mapOf(
 
     // 2. Trích xuất chuỗi mã hóa m3u8 từ script (ví dụ Regex tìm biến UUID/hls)
     // Cần kiểm tra regex khớp với cấu trúc script hiện tại của MissAV
-    val m3u8Url = Regex("""https://[^\s"'<]+?\.m3u8""").find(response)?.value
+    val m3u8Url = Regex("""https://[^\s"'<]+?\.m3u8""").find(response)?.value?:""
 
 
     
