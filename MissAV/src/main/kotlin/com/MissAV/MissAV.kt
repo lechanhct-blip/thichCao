@@ -152,7 +152,7 @@ val headers = mapOf(
 
 override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallback: (SubtitleFile) -> Unit, callback: (ExtractorLink) -> Unit): Boolean {        
 
-var foundUrl = ""
+var m3u8Url = ""
 
     // Cho WebView tải trang ngầm và bắt URL m3u8 từ Network Requests
     val webView = app.get(
@@ -170,7 +170,7 @@ var foundUrl = ""
     val match = m3u8Regex.find(webView.text)?.value
 
     if (!match.isNullOrEmpty()) {
-        foundUrl = match
+        m3u8Url = match
     }
     
 /*
