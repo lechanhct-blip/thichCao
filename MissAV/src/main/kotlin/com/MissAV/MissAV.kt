@@ -23,7 +23,7 @@ import com.lagradost.cloudstream3.CommonActivity.showToast
 
 class MissAV : MainAPI() { // All providers must be an instance of MainAPI
 
-    override var name = "Kho Phim 3 9:44"
+    override var name = "Kho Phim 3 1004"
     override val supportedTypes = setOf(TvType.Movie, TvType.NSFW)
     override val hasDownloadSupport   = true
     override val hasChromecastSupport = true
@@ -213,7 +213,7 @@ override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallbac
 //     val m3u8Url = "https://surrit.com/$matchUuid/playlist.m3u8"
     val dulieu = data.split("|")
 
-                     showToast("LOAD LINK...")
+                     //showToast("LOAD LINK...")
 
 
      runAllAsync(
@@ -227,14 +227,14 @@ override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallbac
 
             },
             {
-                showToast("CHUAN BI LAY SUB...")
+                //showToast("CHUAN BI LAY SUB...")
                 val javCode = "([a-zA-Z]+-\\d+)".toRegex().find(dulieu.get(1))?.groups?.get(1)?.value
                 
                 if (javCode != null) {
-                showToast("dA CÓ CODE... $javCode")    
+                //showToast("dA CÓ CODE... $javCode")    
                     getExternalSubtitile(javCode, subtitleCallback)    
                 }else{
-                    showToast("phim nay khong co CODE")
+                    showToast("phim nay khong co SUB")
                 }
                 
             }
