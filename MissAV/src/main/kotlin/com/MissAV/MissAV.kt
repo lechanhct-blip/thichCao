@@ -21,7 +21,7 @@ import com.lagradost.cloudstream3.network.WebViewResolver
 
 class MissAV : MainAPI() { // All providers must be an instance of MainAPI
 
-    override var name = "Kho Phim 3 Missok"
+    override var name = "Kho Phim 3 Miss search"
     override val supportedTypes = setOf(TvType.Movie, TvType.NSFW)
     override val hasDownloadSupport   = true
     override val hasChromecastSupport = true
@@ -108,6 +108,13 @@ override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageR
         return newHomePageResponse(HomePageList(request.name, responseList, isHorizontalImages = true),hasNext = true)
 }
 
+
+   override suspend fun search(query: String, page: Int): SearchResponseList {
+        val doc = app.get("$mainUrl/vi/search/$query?page=$page").document
+        val results = doc.select("div.thumbnail.group").mapNotNull { it.toSearchResult() }
+        val hasNext = if (results.isEmpty()) false else true
+        return newSearchResponseList(results, hasNext)
+    }
 
 override suspend fun load(url: String): LoadResponse? {
 
