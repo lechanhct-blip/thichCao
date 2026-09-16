@@ -362,6 +362,7 @@ suspend fun getExternalSubtitile(code: String, subtitleCallback: (SubtitleFile) 
                                 if(text.isNotEmpty() && text[0].text() == "Download")
                                 {
                                     val url = "$subtitleCatUrl${text[0].attr("href")}"
+                                    showToast("$language Da tim thay SUB: $url")
                                     subtitleCallback.invoke(
                                         newSubtitleFile(
                                             language.replace("\uD83D\uDC4D \uD83D\uDC4E",""),  // Use label for the name
