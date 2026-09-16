@@ -1,0 +1,8 @@
+{
+    "name": "CaoCao Repo",
+    "description": "Kho nguồn phim CaoCao",
+    "manifestVersion": 1,
+    "pluginLists": [
+        "https://raw.githubusercontent.com/lechanhct-blip/thichCao/builds/plugins.json"
+    ]
+}
