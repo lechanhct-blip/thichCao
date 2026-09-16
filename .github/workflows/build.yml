@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
     inputs:
       provider_name:
-        description: 'Nhập chính xác tên thư mục Provider cần build (Ví dụ: ProviderAnimes)'
+        description: 'Nhập tên thư mục Provider cần build'
         required: true
-        default: 'ProviderAnimes'
+        default: 'MissAV'
   
 
 permissions:
