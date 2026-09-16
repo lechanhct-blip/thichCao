@@ -21,7 +21,7 @@ import com.lagradost.cloudstream3.network.WebViewResolver
 
 class MissAV : MainAPI() { // All providers must be an instance of MainAPI
 
-    override var name = "Kho Phim 3 Miss"
+    override var name = "Kho Phim 3 Miss338"
     override val supportedTypes = setOf(TvType.NSFW)
     override val hasDownloadSupport   = true
     override val hasChromecastSupport = true
@@ -47,6 +47,17 @@ override var mainUrl = "https://missav.ws"
         "Accept-Language" to "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7"
     )
 
+
+
+  override fun getVideoInterceptor(extractorLink: ExtractorLink): okhttp3.Interceptor {
+        return okhttp3.Interceptor { chain ->
+            val request = chain.request().newBuilder()
+                .header("User-Agent", "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36")
+                .header("Referer", mainUrl)
+                .build()
+            chain.proceed(request)
+        }
+    }
 
 override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
 
