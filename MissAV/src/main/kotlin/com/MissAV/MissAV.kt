@@ -23,7 +23,7 @@ import com.lagradost.cloudstream3.CommonActivity.showToast
 
 class MissAV : MainAPI() { // All providers must be an instance of MainAPI
 
-    override var name = "Kho Phim 3 1004"
+    override var name = "Kho Phim 3 036"
     override val supportedTypes = setOf(TvType.Movie, TvType.NSFW)
     override val hasDownloadSupport   = true
     override val hasChromecastSupport = true
@@ -65,7 +65,7 @@ override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageR
 
 
         var url = "$mainUrl${request.data}?page=$page"//if (page <= 1) "$mainUrl/vi/new" else "$mainUrl/vi/new?page=$page"
-
+/*
         // Chỉ dùng WebViewResolver khi chạy trên thiết bị Android thật (không bị crash trên JUnit Test PC)
         val response = try {
             app.get(
@@ -78,7 +78,12 @@ override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageR
             app.get(url, headers = headers)
         }
 //
-        var document = response.document
+
+*/
+l
+    
+        var document = app.get(url, headers = headers).document
+
 
 
 
