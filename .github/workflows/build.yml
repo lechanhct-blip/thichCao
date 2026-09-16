@@ -37,8 +37,15 @@ jobs:
         with:
           java-version: 17
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
+      # - name: Setup Android SDK
+      #   uses: android-actions/setup-android@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
 
       - name: Build Plugins
         run: |
