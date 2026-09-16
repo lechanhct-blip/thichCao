@@ -23,7 +23,7 @@ import com.lagradost.cloudstream3.CommonActivity.showToast
 
 class MissAV : MainAPI() { // All providers must be an instance of MainAPI
 
-    override var name = "Kho Phim 3 9:32"
+    override var name = "Kho Phim 3 9:44"
     override val supportedTypes = setOf(TvType.Movie, TvType.NSFW)
     override val hasDownloadSupport   = true
     override val hasChromecastSupport = true
@@ -128,6 +128,8 @@ val headers = mapOf(
     // 1. Tải HTML trang chi tiết
     val document = app.get(url, headers = headers).document
 
+
+    val ten_phim = document.selectFirst("Title")?.text() ?:""
 // 2. Tìm thẻ script chứa đoạn eval unpack m3u8
     val scripts = document.select("script").map { it.data() }
     val targetScript = scripts.find { it.contains("eval(function(p,a,c,k,e,d)") && it.contains("surrit") }
@@ -137,7 +139,8 @@ val headers = mapOf(
         val uuidRegex = Regex("""([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})""")
         val matchUuid = uuidRegex.find(targetScript)?.value?:""
         if (matchUuid.isNotEmpty()) {
-            m3u8Url = "https://surrit.com/$matchUuid/playlist.m3u8"
+            val javCode = "([a-zA-Z]+-\\d+)".toRegex().find(ten_phim)?.groups?.get(1)?.value
+            m3u8Url = "https://surrit.com/$matchUuid/playlist.m3u8" + "|$javCode"
         }
     }
 
@@ -147,7 +150,7 @@ val headers = mapOf(
 
         val hinh =fixUrlNull(document.selectFirst("meta[property=og:image]")?.attr("content"))
         //val title = document.selectFirst("meta[property=og:title]")?.attr("content")?.trim() ?: "Unknown"
-        val ten_phim = document.selectFirst("Title")?.text() ?:""
+        
         var thong_tin = document.selectFirst("meta[property=og:title]")?.attr("content")?.trim()?:""
 
         //var thong_tin = ten_phim
@@ -208,7 +211,7 @@ override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallbac
 //       //  if (!matchUuid.isNullOrEmpty()) {
 //             // 4. Tái tạo URL m3u8 chính thức
 //     val m3u8Url = "https://surrit.com/$matchUuid/playlist.m3u8"
-
+    val dulieu = data.split("|")
 
                      showToast("LOAD LINK...")
 
@@ -218,14 +221,14 @@ override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallbac
                  val extractor = newExtractorLink(
                     source = this.name,
                     name = "Server VIP",
-                    url = data
+                    url = dulieu.get(0)
                 )
                 callback.invoke(extractor)
 
             },
             {
                 showToast("CHUAN BI LAY SUB...")
-                val javCode = "([a-zA-Z]+-\\d+)".toRegex().find(this.name)?.groups?.get(1)?.value
+                val javCode = "([a-zA-Z]+-\\d+)".toRegex().find(dulieu.get(1))?.groups?.get(1)?.value
                 
                 if (javCode != null) {
                 showToast("dA CÓ CODE... $javCode")    
