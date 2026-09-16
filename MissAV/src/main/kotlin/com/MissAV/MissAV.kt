@@ -23,7 +23,7 @@ import com.lagradost.cloudstream3.CommonActivity.showToast
 
 class MissAV : MainAPI() { // All providers must be an instance of MainAPI
 
-    override var name = "Kho Phim 3 036"
+    override var name = "Kho Phim 3 0052"
     override val supportedTypes = setOf(TvType.Movie, TvType.NSFW)
     override val hasDownloadSupport   = true
     override val hasChromecastSupport = true
@@ -124,11 +124,11 @@ override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageR
     }
 
 override suspend fun load(url: String): LoadResponse? {
-
+/*
 val headers = mapOf(
         "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64)...",
         "Referer" to url
-    )
+    )*/
 
     // 1. Tải HTML trang chi tiết
     val document = app.get(url, headers = headers).document
