@@ -129,12 +129,14 @@ val headers = mapOf(
 // 2. Tìm thẻ script chứa đoạn eval unpack m3u8
     val scripts = document.select("script").map { it.data() }
     val targetScript = scripts.find { it.contains("eval(function(p,a,c,k,e,d)") && it.contains("surrit") }
-
+    var m3u8Url = ""
 //if (targetScript != null) {
         // 3. Dùng Regex lọc chuỗi UUID (VD: f66ccc35-3ac7-4da8-afa4-4cc4f9eab3a7)
         val uuidRegex = Regex("""([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})""")
-        val matchUuid = uuidRegex.find(targetScript)?.value?:""
-        val m3u8Url = "https://surrit.com/$matchUuid/playlist.m3u8"
+        val matchUuid = uuidRegex.find(targetScript)?.value
+        if (matchUuid.isNotEmpty()) {
+            m3u8Url = "https://surrit.com/$matchUuid/playlist.m3u8"
+        }
 //}
 
     
