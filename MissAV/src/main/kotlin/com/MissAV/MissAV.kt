@@ -150,6 +150,44 @@ val headers = mapOf(
     }
 
 
+override suspend fun loadLinks(data: String, isCasting: Boolean, subtitleCallback: (SubtitleFile) -> Unit, callback: (ExtractorLink) -> Unit): Boolean {        
+
+val headers = mapOf(
+        "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64)...",
+        "Referer" to data
+    )
+
+   
+// 1. Tải HTML trang chi tiết
+    val response = app.get(data, headers = headers).text
+
+    // 2. Trích xuất chuỗi mã hóa m3u8 từ script (ví dụ Regex tìm biến UUID/hls)
+    // Cần kiểm tra regex khớp với cấu trúc script hiện tại của MissAV
+    val m3u8Url = Regex("""https://[^\s"'<]+?\.m3u8""").find(response)?.value
+
+
+    
+    // 4. Kiểm tra và trả về link cho trình phát
+    if (m3u8Url.startsWith("http")) {
+        val extractor = newExtractorLink(
+            source = this.name,
+            name = "Server VIP",
+            url = m3u8Url
+        )
+        callback.invoke(extractor)
+        return true
+    }
+    return false
+  }
+
+
+
+
+
+
+
+
+
 
 
     private fun Element.toSearchResult(): SearchResponse? {
