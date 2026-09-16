@@ -33,7 +33,7 @@ class MissAV : MainAPI() { // All providers must be an instance of MainAPI
 
 override var mainUrl = "https://missav.ws"
     override val mainPage = mainPageOf(
-        "/dm539/vi/new/" to "ĐỀ XUẤT",
+        "/dm539/vi/new/" to "ĐỀ XUẤT328",
         "/dm635/vi/release/" to "MỚI CẬP NHẬT",
         "/dm106/vi/genres/Plot/" to "CỐT TRUYỆN",
         "/dm55/vi/genres/4K/" to "4K",
