@@ -29,7 +29,7 @@
   "auto_download_plugins_key2" : 3,
   "prefer_media_type_key_2" : [ "11", "12", "13", "14", "15", "16", "17", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ],
   "show_kitsu_posters_key" : true,
-  "sync_last_push_hash" : "e52e58ff004d6be9985b6d911423b07a6cd8c7c971c4f5d605a92c4855f98652",
+  "sync_last_push_hash" : "4e8b4086f2985bebb4d16d5995347b0d06412c3b531e72b648c61f1566f7dcbc",
   "double_tap_enabled_key" : false,
   "pip_enabled_key" : true,
   "app_locale" : "vi",
