@@ -53,5 +53,24 @@
         "tvTypes": [
             "NSFW"
         ]
+    },
+    {
+        "name": "KKPhim",
+        "internalName": "KKPhim",
+        "version": 1,
+        "url": "https://raw.githubusercontent.com/lechanhct-blip/thichCao/builds/KKPhim.cs3",
+        "fileSize": 16586,
+        "status": 1,
+        "apiVersion": 1,
+        "authors": [
+            "ngoc tan"
+        ],
+        "language": "isr",
+        "description": "KKPhim",
+        "iconUrl": "https://www.google.com/s2/favicons?domain=uncutmaza.cc&sz=%size%",
+        "tvTypes": [
+            "Movie"
+        ]
     }
+    
 ]
