@@ -1,10 +1,29 @@
 [
     {
+        "name": "SieuTamPhim",
+        "internalName": "SieuTamPhim",
+        "version": 1,
+        "url": "https://raw.githubusercontent.com/lechanhct-blip/thichCao/refs/heads/builds/SieuTamPhim.cs3",
+        "fileSize": 14022,
+        "status": 3,
+        "apiVersion": 1,
+        "authors": [
+            "ngoctan",
+            "lechanh"
+        ],
+        "language": "🇮🇱",
+        "description": "Siêu Tầm Phim",
+        "iconUrl": "https://raw.githubusercontent.com/lechanhct-blip/thichCao/builds/logo.jpg",
+        "tvTypes": [
+            "Movie"
+        ]
+    },
+    {
         "name": "KKPhim",
         "internalName": "KKPhim",
         "version": 1,
         "url": "https://raw.githubusercontent.com/lechanhct-blip/thichCao/refs/heads/builds/KKPhim.cs3",
-        "fileSize": 13285,
+        "fileSize": 29124,
         "status": 3,
         "apiVersion": 1,
         "authors": [
@@ -60,7 +79,7 @@
         "internalName": "MissAV",
         "version": 1403,
         "url": "https://raw.githubusercontent.com/lechanhct-blip/thichCao/refs/heads/builds/MissAV.cs3",
-        "fileSize": 24038,
+        "fileSize": 24424,
         "status": 1,
         "apiVersion": 1,
         "authors": [
