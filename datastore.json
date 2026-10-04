@@ -1056,7 +1056,7 @@
   "0/video_pos_dur/1247258091" : "{\"position\":10171,\"duration\":829160}",
   "0/result_episode/-1386256100" : "0",
   "0/result_resume_watching_2/1509823098" : "{\"parentId\":1509823098,\"episodeId\":1509823098,\"episode\":0,\"season\":null,\"updateTime\":1789913557173,\"isFromDownload\":false}",
-  "FILES_TO_DELETE_KEY" : "[\"/data/user/0/com.lagradost.cloudstream3/cache/exoplayer\"]",
+  "FILES_TO_DELETE_KEY" : "[]",
   "0/result_dub/-2145325510" : "0",
   "0/result_episode/-1831599202" : "0",
   "0/result_dub/1478911592" : "0",
