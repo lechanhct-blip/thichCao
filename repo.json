@@ -4,8 +4,5 @@
     "manifestVersion": 1,
     "pluginLists": [
         "https://raw.githubusercontent.com/lechanhct-blip/thichCao/builds/plugins.json"
-    ],
-    "NangCuc":"nangcuc.ws",
-    "MissAV":"missav.ws",
-    "JAVHDZ":"javhdz.wtf"
+    ]
 }
