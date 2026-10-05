@@ -1,0 +1,57 @@
+[
+    {
+        "name": "NangCuc",
+        "internalName": "NangCuc",
+        "version": 1,
+        "url": "https://raw.githubusercontent.com/lechanhct-blip/thichCao/refs/heads/builds/NangCuc.cs3",
+        "fileSize": 12183,
+        "status": 1,
+        "apiVersion": 1,
+        "authors": [
+            "Nang Cục FAKE"
+        ],
+        "language": "🇮🇱",
+        "description": "nang cuc hang fake",
+        "iconUrl": "https://www.google.com/s2/favicons?domain=uncutmaza.cc&sz=%size%",
+        "tvTypes": [
+            "NSFW"
+        ]
+    },
+    {
+        "name": "JAVHDZ",
+        "internalName": "JAVHDZ",
+        "version": 1,
+        "url": "https://raw.githubusercontent.com/lechanhct-blip/thichCao/refs/heads/builds/JAVHDZ.cs3",
+        "fileSize": 22800,
+        "status": 1,
+        "apiVersion": 1,
+        "authors": [
+            "ngoctan",
+            "lechanh"
+        ],
+        "language": "🇮🇱",
+        "description": "JAVHDZ",
+        "iconUrl": "https://raw.githubusercontent.com/lechanhct-blip/thichCao/builds/logo.jpg",
+        "tvTypes": [
+            "NSFW"
+        ]
+    },
+    {
+        "name": "MissAV",
+        "internalName": "MissAV",
+        "version": 1403,
+        "url": "https://raw.githubusercontent.com/lechanhct-blip/thichCao/refs/heads/builds/MissAV.cs3",
+        "fileSize": 24424,
+        "status": 1,
+        "apiVersion": 1,
+        "authors": [
+            "Miss AV"
+        ],
+        "language": "🇮🇱",
+        "description": "MissAV",
+        "iconUrl": "https://www.google.com/s2/favicons?domain=uncutmaza.cc&sz=%size%",
+        "tvTypes": [
+            "NSFW"
+        ]
+    }
+]
