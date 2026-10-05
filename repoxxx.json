@@ -1,0 +1,11 @@
+{
+    "name": "Giải trí 18+",
+    "description": "Kho phim Giải Trí",
+    "manifestVersion": 1,
+    "pluginLists": [
+        "https://raw.githubusercontent.com/lechanhct-blip/thichCao/builds/pluginsxxx.json"
+    ],
+    "NangCuc":"nangcuc.ws",
+    "MissAV":"missav.ws",
+    "JAVHDZ":"javhdz.wtf"
+}
