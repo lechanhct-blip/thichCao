@@ -4673,13 +4673,5 @@
   "0/result_episode/-782693401" : "0",
   "0/result_resume_watching_2/-1831601989" : "{\"parentId\":-1831601989,\"episodeId\":-1831601989,\"episode\":0,\"season\":null,\"updateTime\":1789729009233,\"isFromDownload\":false}",
   "0/result_episode/122346703" : "0",
-  "0/result_dub/1773699577" : "0",
-  "0/result_resume_watching_2/1180786594" : "{\"parentId\":1180786594,\"episodeId\":1180786594,\"episode\":0,\"season\":null,\"updateTime\":1791296182140,\"isFromDownload\":false}",
-  "0/result_resume_watching_2/1167847886" : "{\"parentId\":1167847886,\"episodeId\":1167847886,\"episode\":0,\"season\":null,\"updateTime\":1791301350826,\"isFromDownload\":false}",
-  "0/result_resume_watching_2/1017363645" : "{\"parentId\":1017363645,\"episodeId\":1017363645,\"episode\":0,\"season\":null,\"updateTime\":1791289862974,\"isFromDownload\":false}",
-  "0/result_resume_watching_2/1211177916" : "{\"parentId\":1211177916,\"episodeId\":1211177916,\"episode\":0,\"season\":null,\"updateTime\":1791296906681,\"isFromDownload\":false}",
-  "0/result_resume_watching_2/422054928" : "{\"parentId\":422054928,\"episodeId\":422054928,\"episode\":0,\"season\":null,\"updateTime\":1791296744880,\"isFromDownload\":false}",
-  "0/result_resume_watching_2/535950112" : "{\"parentId\":535950112,\"episodeId\":535950112,\"episode\":0,\"season\":null,\"updateTime\":1791296292805,\"isFromDownload\":false}",
-  "0/result_resume_watching_2/-1749455605" : "{\"parentId\":-1749455605,\"episodeId\":-1749455605,\"episode\":0,\"season\":null,\"updateTime\":1791300653403,\"isFromDownload\":false}",
-  "0/result_resume_watching_2/1377130669" : "{\"parentId\":1377130669,\"episodeId\":1377130669,\"episode\":0,\"season\":null,\"updateTime\":1791297034338,\"isFromDownload\":false}"
+  "0/result_dub/1773699577" : "0"
 }
