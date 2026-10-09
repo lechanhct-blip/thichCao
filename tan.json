@@ -1,0 +1,8 @@
+{
+    "name": "Giải trí",
+    "description": "Kho phim Giải Trí",
+    "manifestVersion": 1,
+    "pluginLists": [
+        "https://raw.githubusercontent.com/lechanhct-blip/thichCao/builds/tanplugins.json"
+    ]
+}
