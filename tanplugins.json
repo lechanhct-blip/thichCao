@@ -1,5 +1,26 @@
 [
     {
+        "iconUrl": "https://raw.githubusercontent.com/google/material-design-icons/master/png/toggle/toggle_on/materialicons/24dp/2x/baseline_toggle_on_black_24dp.png",
+        "fileHash": "sha256-0b1cd86946224e4a5ac8506a154d3a082b1c342e3ce407456f950b7fe24dd53f",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/h0dev/0cs3",
+        "fileSize": 202285,
+        "status": 1,
+        "language": "vi",
+        "authors": [
+            "dmin",
+            "SIX"
+        ],
+        "tvTypes": [
+            "Others"
+        ],
+        "version": 6,
+        "internalName": "1DPI",
+        "description": "1DPI (ByeDPI) \u2014 v\u01b0\u1ee3t DPI: ciadpi + SOCKS cho baseClient + system proxy cho Cronet/video. C\u00e0i l\u00e0 t\u1ef1 B\u1eacT; b\u1ea5m n\u00fat c\u00e0i \u0111\u1eb7t c\u1ee7a plugin \u0111\u1ec3 B\u1eacT/T\u1eaeT.",
+        "url": "https://raw.githubusercontent.com/h0dev/0cs3/movie/1DPI.cs3",
+        "name": "1DPI"
+    },
+    {
         "name": "SieuTamPhim",
         "internalName": "SieuTamPhim",
         "version": 1,
