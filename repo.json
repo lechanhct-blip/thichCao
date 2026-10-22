@@ -4,5 +4,8 @@
     "manifestVersion": 1,
     "pluginLists": [
         "https://raw.githubusercontent.com/lechanhct-blip/thichCao/builds/plugins.json"
-    ]
+    ],
+    "RoPhim":"rophim.bar",
+    "SieuTamPhim":"sieutamphim.top",
+    "__":"__.one"
 }
