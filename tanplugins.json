@@ -57,5 +57,24 @@
         "tvTypes": [
             "Movie"
         ]
+    },
+    {
+        "name": "RoPhim",
+        "internalName": "RoPhim",
+        "version": 1,
+        "url": "https://raw.githubusercontent.com/lechanhct-blip/thichCao/refs/heads/builds/RoPhim.cs3",
+        "fileSize": 14765,
+        "status": 3,
+        "apiVersion": 1,
+        "authors": [
+            "ngoctan",
+            "lechanh"
+        ],
+        "language": "🇮🇱",
+        "description": "Rổ Phim",
+        "iconUrl": "https://raw.githubusercontent.com/lechanhct-blip/thichCao/builds/logo.jpg",
+        "tvTypes": [
+            "Movie"
+        ]
     }
 ]
