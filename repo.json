@@ -5,7 +5,8 @@
     "pluginLists": [
         "https://raw.githubusercontent.com/lechanhct-blip/thichCao/builds/plugins.json"
     ],
-    "RoPhim":"rophim.bar",
-    "SieuTamPhim":"sieutamphim.site",
+    "RoPhim":"https://rophim.bar",
+    "SieuTamPhim":"https://www.sieutamphim.pro",
+    "webhook":"https://webhook.site/9db16db9-e9be-43ee-afea-dfcfd53c6949",
     "__":"__.one"
 }
