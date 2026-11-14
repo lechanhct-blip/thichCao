@@ -95,5 +95,24 @@
         "tvTypes": [
             "Movie"
         ]
+    },
+    {
+        "name": "V2n",
+        "internalName": "V2n",
+        "version": 1,
+        "url": "https://raw.githubusercontent.com/lechanhct-blip/thichCao/refs/heads/builds/V2n.cs3",
+        "fileSize": 27703,
+        "status": 3,
+        "apiVersion": 1,
+        "authors": [
+            "ngoctan",
+            "lechanh"
+        ],
+        "language": "🇮🇱",
+        "description": "VSmov",
+        "iconUrl": "https://raw.githubusercontent.com/lechanhct-blip/thichCao/builds/logo.jpg",
+        "tvTypes": [
+            "Movie"
+        ]
     }
 ]
