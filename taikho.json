@@ -20,7 +20,7 @@
     },
      {
         "name": "PHIM 18+",
-        "internalName": "SieuTamPhim",
+        "internalName": "SieuTm",
         "version": 1,
         "url": "https://raw.githubusercontent.com/lechanhct-blip/thichCao/refs/heads/builds/NSFW.cs3",
         "fileSize": 18980,
