@@ -1,12 +1,17 @@
 {
-    "name": "Giải tríaa",
+    "name": "Giải trí",
     "description": "Kho phim Giải Trí",
     "manifestVersion": 1,
     "pluginLists": [
         "https://raw.githubusercontent.com/lechanhct-blip/thichCao/builds/plugins.json"
     ],
-    "RoPhim":"https://rophim.bar",
-    "SieuTamPhim":"https://www.sieutamphim.cloud",
+    "kkphim":"https://kkphim.com",
+    "rophim":"https://rophim.bar",
+    "sieutamphim":"https://www.sieutamphim.cloud",
+    "tvhay":"https://tvhay.buzz",
+    "vn2":"https://www.vn2d.my",
+    "vsmov":"https://vsmov.com",
+    "xem20":"https://xem20.net",
     "webhook":"https://webhook.site/9db16db9-e9be-43ee-afea-dfcfd53c6949",
-    "__":"__.one"
+
 }
