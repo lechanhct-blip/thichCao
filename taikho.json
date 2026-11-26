@@ -1,6 +1,6 @@
 [
     {
-        "name": "PHIM",
+        "name": "PHIM ẢNH",
         "internalName": "PHIM",
         "version": 1,
         "url": "https://raw.githubusercontent.com/lechanhct-blip/thichCao/refs/heads/builds/MOVIE.cs3",
@@ -12,10 +12,15 @@
             "lechanh"
         ],
         "language": "🇮🇱",
-        "description": "Kho phim khung lo",
+        "description": "Chào mừng bạn đến với Kho phim trực tuyến...",
         "iconUrl": "https://raw.githubusercontent.com/lechanhct-blip/thichCao/builds/logo.jpg",
-        "tvTypes": [
-            "Movie"
+          "tvTypes": [
+            "Movie",
+            "TvSeries",
+            "Anime",
+              "AnimeMovie",
+            "Cartoon",
+            "AsianDrama"
         ]
     },
      {
@@ -31,7 +36,7 @@
             "lechanh"
         ],
         "language": "🇮🇱",
-        "description": "19+",
+        "description": "Chuyên mục dành cho người trên 18 tuổi",
         "iconUrl": "https://raw.githubusercontent.com/lechanhct-blip/thichCao/builds/logo.jpg",
         "tvTypes": [
             "NSFW"
