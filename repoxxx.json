@@ -5,7 +5,7 @@
     "pluginLists": [
         "https://raw.githubusercontent.com/lechanhct-blip/thichCao/builds/pluginsxxx.json"
     ],
-    "NangCuc":"https://nangcuc.ws",
-    "MissAV":"https://missav.ws",
-    "JAVHDZ":"https://javhdz.page"
+    "nangcuc":"https://nangcuc.ws",
+    "missav":"https://missav.ws",
+    "javhdz":"https://javhdz.page"
 }
